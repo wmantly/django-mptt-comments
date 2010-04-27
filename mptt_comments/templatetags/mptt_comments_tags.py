@@ -179,9 +179,10 @@ class MpttCommentListNode(BaseMpttCommentNode):
         if self.reverse:
             qs = qs.reverse()
         offset = self.get_offset()
-        if offset > 0:
+        if offset > 0 and not getattr(settings, 'MPTT_COMMENTS_DONT_PAGINATE', False):
             return list(qs[:offset])
-        # if offset <= 0, don't list(): the developer will use its own pagination system
+        # if offset <= 0 or MPTT_COMMENTS_DONT_PAGINATE is True, don't list():
+        # the developer will use its own pagination system
         return qs 
         
     def get_offset(self):
@@ -213,6 +214,8 @@ class MpttCommentListNode(BaseMpttCommentNode):
         context['collapse_levels_above'] = getattr(settings, 'MPTT_COMMENTS_COLLAPSE_ABOVE', 2)
         context['cutoff_level'] = self.cutoff_level
         context['bottom_level'] = self.bottom_level
+        context['offset'] = self.get_offset()
+        context['internal_pagination'] = not getattr(settings, 'MPTT_COMMENTS_DONT_PAGINATE', False)
         return ''
         
 class MpttSpecialTreeListNode(MpttCommentListNode):
