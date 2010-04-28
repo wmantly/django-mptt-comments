@@ -6,7 +6,6 @@
     {# only use this template for level=0 comments, in alternate mode! #}
 
     <div class="comment comment_level_{{ comment.level }} {% mptt_comment_print_collapse_state comment %} {% if comment.is_removed %}is_removed{% endif %}" id="comment_{{ comment.pk }}">
-    <!-- this should be a level 0 comment - alternate loading system -->
         
         <p class="comment_title">
             <a class="comment_expand" href="{% url comment-detail comment.pk %}">

@@ -12,12 +12,6 @@
     }    
     
     $(document).ready(function(){
-
-        var comment_level_re = new RegExp("comment_level_(\\d+)", "")
-        var comment_pk_re = new RegExp("comment_(\\d+)", "")
-        
-        var posted_re = new RegExp("this_is_a_comment", "g")
-        var reply_count_re = new RegExp("(\\d+)")
         
         function update_replies_count(nxt) {
             var parents = nxt.parents('.comment')
@@ -51,12 +45,16 @@
                 
                 post_data['is_ajax'] = 1
                             
-                $.post(form.attr('action'), post_data, function(data, textStatus){
-                                    
-                    if (posted_re.test(data)) {
+                $.post(form.attr('action'), post_data, function(data, textStatus, xhrobject){
+
+                    if (xhrobject.status == 201 || xhrobject.status == 202) {
                         if (nxt.hasClass('new_comment_form_wrapper')) {
                             $('#mptt-comments-tree').append(data)
-                            nxt.replaceWith('<p>{% trans "Your comment was posted." %}</p>')
+                            if (xhrobject.status == 201) {
+                                nxt.replaceWith('<p>{% trans "Your comment was posted." %}</p>')
+                            } else {
+                                nxt.replaceWith('<p>{% trans "Your comment was posted, it is now awaiting moderation to be displayed." %}</p>')
+                            }
                         }
                         else {
                             update_replies_count(nxt)

@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import render_to_response
+from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
@@ -166,13 +167,19 @@ def confirmation_view(template, doc="Display a confirmation view.", is_ajax=Fals
                 comment = get_model().objects.get(pk=request.GET['c'])
             except ObjectDoesNotExist:
                 pass
-        return render_to_response(template, {
-                'comment': comment,
-                'is_ajax': is_ajax,
-                'success' : True
-            },
-            context_instance=RequestContext(request)
+
+        response = HttpResponse(
+            render_to_string(
+                template, {
+                    'comment': comment,
+                    'is_ajax': is_ajax,
+                    'success' : True
+                },
+                RequestContext(request)
+            )
         )
+        response.status_code = comment.is_public and 201 or 202
+        return response
 
     confirmed.__doc__ = textwrap.dedent("""\
         %s
