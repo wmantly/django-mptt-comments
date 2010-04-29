@@ -1,11 +1,10 @@
 import textwrap
-from django import http
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseNotAllowed
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
@@ -56,7 +55,7 @@ def post_comment(request, next=None, *args, **kwargs):
 
     # Require POST
     if request.method != 'POST':
-        return http.HttpResponseNotAllowed(["POST"])
+        return HttpResponseNotAllowed(["POST"])
         
     is_ajax = request.POST.get('is_ajax') and '_ajax' or ''
 
@@ -294,7 +293,7 @@ def comments_more(request, from_comment_pk, restrict_to_tree=False, *args, **kwa
         
     json_data['comments_tree'] = comment_tree_json(request, remaining, comment.tree_id, cutoff_level, bottom_level)
     
-    return http.HttpResponse(simplejson.dumps(json_data), mimetype='application/json')
+    return HttpResponse(simplejson.dumps(json_data), mimetype='application/json')
     
 def comments_subtree(request, from_comment_pk, include_self=None, include_ancestors=None, *args, **kwargs):
     
@@ -317,7 +316,7 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         json_data = {'comments_for_update': [], 'comments_tree': {} }
         json_data['comments_tree'] = comment_tree_json(request, list(qs), comment.tree_id, cutoff_level, bottom_level)
         
-        return http.HttpResponse(simplejson.dumps(json_data), mimetype='application/json')
+        return HttpResponse(simplejson.dumps(json_data), mimetype='application/json')
         
     else:
         
