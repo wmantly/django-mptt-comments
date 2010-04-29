@@ -101,10 +101,8 @@ class MpttCommentTopLevelCountNode(BaseMpttCommentNode):
     def get_context_value_from_queryset(self, context, qs):
         return qs.filter(level=0).order_by().count()
         
-class MpttCommentHiddenCountNode(BaseMpttCommentNode):
+class BaseMpttCommentWithoutFilteringNode(BaseMpttCommentNode):
 
-    """Insert a count of hidden comments into the context."""
-    
     def get_query_set(self, context):
         # Copied from django.contrib.comments, but changing the is_public filter
         # Too bad you can't "unfilter" a queryset... :(
@@ -124,15 +122,22 @@ class MpttCommentHiddenCountNode(BaseMpttCommentNode):
         # be present on a custom comment model subclass. If they exist, we 
         # should filter on them.
         field_names = [f.name for f in self.comment_model._meta.fields]
-        if 'is_public' in field_names:
-            qs = qs.filter(is_public=False) # changed line is here
+        
+        # subclasses will filter is_public themselves.
+        # if 'is_public' in field_names:
+        #    qs = qs.filter(is_public=False) # changed line is here
+        
         if getattr(settings, 'COMMENTS_HIDE_REMOVED', True) and 'is_removed' in field_names:
             qs = qs.filter(is_removed=False)
         
         return qs
+        
+class MpttCommentHiddenCountNode(BaseMpttCommentWithoutFilteringNode):
+
+    """Insert a count of hidden comments into the context."""
             
     def get_context_value_from_queryset(self, context, qs):
-        return qs.count()
+        return qs.filter(is_public=False).count()
         
 class MpttCommentListNode(BaseMpttCommentNode):
 
