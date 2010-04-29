@@ -12,6 +12,8 @@
     }    
     
     $(document).ready(function(){
+    
+        var reply_count_re = new RegExp("(\\d+)")
         
         function update_replies_count(nxt) {
             var parents = nxt.parents('.comment')
