@@ -107,7 +107,7 @@
                 
             var href = $(this).attr('href')
             
-            var id = 'comment_' + (new RegExp("(\\d+)/$").exec(href)[1])
+            var id = 'c' + (new RegExp("(\\d+)/$").exec(href)[1])
             
             if (!is_in(replies_loaded, id)) {
             
@@ -129,7 +129,7 @@
         $('.comment_expand').live("click", function() { 
             
             var href = $(this).attr('href')    
-            var id = 'comment_' + (new RegExp("(\\d+)/$").exec(href)[1])
+            var id = 'c' + (new RegExp("(\\d+)/$").exec(href)[1])
             
             var comment_el = $('#' + id)
             var content_el = $('.comment_content', comment_el)
@@ -151,7 +151,7 @@
                 
                 var comments_for_update = data.comments_for_update;
                 var tid = data.tid;
-                var more = $('#comment_' + tid + ' .comments_more');
+                var more = $('#c' + tid + ' .comments_more');
                 var morep = more.parent()
 
                 if (comments_for_update) {
@@ -163,7 +163,7 @@
                                 morep.before(comment.html)
                             } 
                             else {
-                                $('#comment_' + comment.parent).append(comment.html)
+                                $('#c' + comment.parent).append(comment.html)
                             }
                         }
                     }
@@ -177,7 +177,7 @@
                 var remaining_count = data.remaining_count
 
                 if (remaining_count > 0) {
-                    $('#comment_' + tid + ' .comments_more_remaining').html(remaining_count)
+                    $('#c' + tid + ' .comments_more_remaining').html(remaining_count)
 
                     if (update_len) {
                         var last_comment_pk = comments_for_update[update_len - 1].pk
