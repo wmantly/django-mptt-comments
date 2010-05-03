@@ -23,12 +23,7 @@
     
     <div class="comment_content">
         
-    <p class="comment_meta">
-        <span class="commented_by">{% trans "Commented by" %} {{ comment.name }}</span> -
-        <span class="commented_day">{{ comment.submit_date|date:"l" }}</span>,
-        <span class="commented_date">{{ comment.submit_date|date:"j F" }}</span>
-        {% trans "at" %} <span class="commented_time">{{ comment.submit_date|date:"H:i" }}<span> 
-    </p>
+    {% include "comments/_comment_meta.html" %}
         
     {% if comment.is_removed %}
         {% trans "Comment removed" %}
