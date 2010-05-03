@@ -14,7 +14,7 @@
     {% if not internal_pagination %}
         {% paginate %}
     {% endif %}
-    <div id="mptt-comments-tree">
+    <div id="mptt-comments-tree" class="block-comments-tree">
         {% for comment in comments %}
             {% include "comments/alternate/display_comment_toplevel.html" %}
         {% endfor %}
