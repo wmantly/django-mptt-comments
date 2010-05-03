@@ -11,15 +11,7 @@
 
     <div class="comment comment_level_{{ comment.level }} {% mptt_comment_print_collapse_state comment %} {% if comment.is_removed %}is_removed{% endif %} {% if not comment.is_public %}is_not_public{% endif %}" id="c{{ comment.pk }}">
         
-    <p class="comment_title">
-        <a class="comment_expand" href="{% url comment-detail comment.pk %}">
-            {% if comment.is_removed %}
-                {% trans "Comment removed" %}
-            {% else %}
-                {{ comment.title }}
-            {% endif %}
-        </a>
-    </p>
+    {% include "comments/_comment_title.html" %}
     
     <div class="comment_content">
         

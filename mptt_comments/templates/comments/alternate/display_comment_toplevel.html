@@ -5,17 +5,9 @@
     
     {# only use this template for level=0 comments, in alternate mode! #}
 
-    <div class="comment comment_level_{{ comment.level }} {% mptt_comment_print_collapse_state comment %} {% if comment.is_removed %}is_removed{% endif %}" id="c{{ comment.pk }}">
+    <div class="{% include 'comments/_comment_class.html' %}">
         
-        <p class="comment_title">
-            <a class="comment_expand" href="{% url comment-detail comment.pk %}">
-                {% if comment.is_removed %}
-                    {% trans "Comment removed" %}
-                {% else %}
-                    {{ comment.title }}
-                {% endif %}
-            </a>
-        </p>
+        {% include "comments/_comment_title.html" %}
         
         <div class="comment_content">
             
