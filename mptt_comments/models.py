@@ -5,6 +5,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.comments.models import Comment
 from django.contrib.comments.managers import CommentManager
+from django.core import urlresolvers
 
 class MpttCommentManager(CommentManager):
 
@@ -37,6 +38,12 @@ class MpttComment(Comment):
         if not self.ip_address:
             self.ip_address = '0.0.0.0'
         super(MpttComment, self).save(*a, **kw)
+        
+    def get_absolute_url(self):
+        return urlresolvers.reverse(
+              "comment-detail",
+              args=(self.id, )
+          )
     
     class Meta:
         ordering = ('tree_id', 'lft')
