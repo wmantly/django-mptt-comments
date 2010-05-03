@@ -1,1 +1,2 @@
+{% load mptt_comments_tags %}
 comment comment_level_{{ comment.level }} {% mptt_comment_print_collapse_state comment %} {% if comment.is_removed %}is_removed{% endif %}" id="c{{ comment.pk }}
