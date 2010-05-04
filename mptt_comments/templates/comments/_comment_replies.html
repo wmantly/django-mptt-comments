@@ -13,13 +13,15 @@
         {% else %}
             <span class="comment_replies"></span>
         {% endif %}
-         <a class="comment_post_new" href="#post_new_comment">
-            {% trans "Post a new comment" %}
-        </a> |
-        <a class="comment_reply" href="{% url comment-reply comment.pk %}">
-            {% trans "Reply to this comment" %}
-        </a> |
-        <a class="comment_flag" href="{% url comments-flag comment.pk %}">
-            {% trans "Flag this comment" %}
-        </a>
+        {% if not comment.is_removed %}
+            <a class="comment_post_new" href="#post_new_comment">
+                {% trans "Post a new comment" %}
+            </a> |
+            <a class="comment_reply" href="{% url comment-reply comment.pk %}">
+                {% trans "Reply to this comment" %}
+            </a> |
+            <a class="comment_flag" href="{% url comments-flag comment.pk %}">
+                {% trans "Flag this comment" %}
+            </a>
+        {% endif %}
     </p>
