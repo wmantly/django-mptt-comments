@@ -131,13 +131,29 @@ class BaseMpttCommentWithoutFilteringNode(BaseMpttCommentNode):
             qs = qs.filter(is_removed=False)
         
         return qs
+
+class MpttCommentListNodeWithHidden(BaseMpttCommentWithoutFilteringNode):
+
+    # FIXME: doc, and what about parameters beside "as" ?
+    
+    def get_query_set(self, context):
+        qs = super(MpttCommentListNodeWithHidden, self).get_query_set(context)
+        return qs.filter(is_public=False)
         
-class MpttCommentHiddenCountNode(BaseMpttCommentWithoutFilteringNode):
+    def get_context_value_from_queryset(self, context, qs):
+        return qs
+
+    def render(self, context):
+        qs = self.get_query_set(context)
+        context[self.as_varname] = self.get_context_value_from_queryset(context, qs)
+        return ''
+        
+class MpttCommentHiddenCountNode(MpttCommentListNodeWithHidden):
 
     """Insert a count of hidden comments into the context."""
             
     def get_context_value_from_queryset(self, context, qs):
-        return qs.filter(is_public=False).count()
+        return qs.count()
         
 class MpttCommentListNode(BaseMpttCommentNode):
 
@@ -284,6 +300,13 @@ def get_mptt_comments_threads(parser, token):
     """
     return MpttSpecialTreeListNode.handle_token(parser, token)
 
+def get_comment_list_hidden(parser, token):
+    """
+    Gets a flat list of comments and populates the template
+    context with a variable containing that value, whose name is defined by the
+    'as' clause.
+    """
+    return MpttCommentListNodeWithHidden.handle_token(parser, token)    
         
 def get_mptt_comment_list(parser, token):
     """
@@ -397,6 +420,7 @@ register.simple_tag(mptt_comment_form_target)
 register.simple_tag(mptt_comments_media)
 register.simple_tag(mptt_comments_media_css)
 register.simple_tag(mptt_comments_media_js)
+register.tag(get_comment_list_hidden)
 register.tag(get_mptt_comment_list)
 register.tag(get_mptt_comments_threads)
 register.tag(get_mptt_comment_hidden_count)
