@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-31 14:32+0200\n"
-"PO-Revision-Date: 2010-03-31 14:40+0100\n"
+"PO-Revision-Date: 2010-05-04 14:58+0100\n"
 "Last-Translator: Mathieu Pillard <m.pillard@liberation.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -65,13 +65,11 @@ msgid "a friend has replied to a comment"
 msgstr "un ami a répondu à un commentaire"
 
 #: templates/comments/_comment_replies.html:8
-#, fuzzy
 msgid "hidden replies"
 msgstr "réponses supplémentaires"
 
 #: templates/comments/_comment_replies.html:11
 #: templates/comments/comments_media_js.html:31
-#, fuzzy
 msgid "replies"
 msgstr "réponses"
 
@@ -91,13 +89,11 @@ msgstr "Signaler ce commentaire"
 
 #: templates/comments/_comments_remaining.html:6
 #: templates/comments/_subcomments_remaining.html:6
-#, fuzzy
 msgid "Still"
 msgstr "Encore"
 
 #: templates/comments/_comments_remaining.html:6
 #: templates/comments/_subcomments_remaining.html:6
-#, fuzzy
 msgid "comments left"
 msgstr "commentaires restants"
 
@@ -110,17 +106,15 @@ msgstr "Votre commentaire a été posté"
 #: templates/comments/alternate/display_comment_toplevel.html:14
 #: templates/comments/alternate/display_comment_toplevel.html:31
 msgid "Comment removed"
-msgstr "Commentaire supprimmé"
+msgstr "Commentaire supprimé"
 
 #: templates/comments/display_comment.html:28
 #: templates/comments/alternate/display_comment_toplevel.html:24
-#, fuzzy
 msgid "Commented by"
 msgstr "Ecrit par"
 
 #: templates/comments/display_comment.html:31
 #: templates/comments/alternate/display_comment_toplevel.html:27
-#, fuzzy
 msgid "at"
 msgstr "à"
 
@@ -139,12 +133,10 @@ msgid "Preview"
 msgstr "Prévisualiser"
 
 #: templates/comments/posted.html:12
-#, fuzzy
 msgid "Thanks for your comment"
 msgstr "Votre commentaire a bien été posté"
 
 #: templates/comments/posted.html:13
-#, fuzzy
 msgid "Back to the page you commented on"
 msgstr "Revenir sur la page précédente"
 
