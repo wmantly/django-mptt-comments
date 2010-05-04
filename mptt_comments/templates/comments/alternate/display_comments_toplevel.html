@@ -10,7 +10,7 @@
 {% if comments %}
     {% get_comment_count for object as comment_count %}
     {% get_mptt_comment_toplevel_count for object as comment_toplevel_count %}
-    <h2>{% trans "Comments" %} {% blocktrans %}({{ comment_count }} comments in {{ comment_toplevel_count }} threads){% endblocktrans %}</h2>
+    <h2>{% trans "Comments" %} {% blocktrans %}(<span id="comment_count">{{ comment_count }}</span> comments in <span id="comment_toplevel_count">{{ comment_toplevel_count }}</span> threads){% endblocktrans %}</h2>
     {% if not internal_pagination %}
         {% paginate %}
     {% endif %}

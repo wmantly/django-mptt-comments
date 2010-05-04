@@ -27,7 +27,7 @@
                     txt = '1 {% trans "replies" %}';
                 }
                 item.text(txt)
-            })  
+            })
         }
         
         function bind_submit(form, nxt) {
@@ -54,6 +54,14 @@
                             $('#mptt-comments-tree').append(data)
                             if (xhrobject.status == 201) {
                                 nxt.replaceWith('<p>{% trans "Your comment was posted." %}</p>')
+                                            
+                                var comment_count = $('#comment_count')
+                                var toplevel_comment_count = $('#comment_toplevel_count')
+                                comment_count.text(parseInt(comment_count.text()) + 1)
+                                if (post_data.parent_pk != "") {
+                                    toplevel_comment_count.text(parseInt(toplevel_comment_count.text()) + 1)
+                                }                            
+                                
                             } else {
                                 nxt.replaceWith('<p>{% trans "Your comment was posted, it is now awaiting moderation to be displayed." %}</p>')
                             }
