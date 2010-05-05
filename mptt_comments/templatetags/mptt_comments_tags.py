@@ -115,30 +115,8 @@ class BaseMpttCommentWithoutFilteringNode(BaseMpttCommentNode):
             content_type = ctype,
             object_pk    = smart_unicode(object_pk),
             site__pk     = settings.SITE_ID,
-        )
-        
-        # The is_public and is_removed fields are implementation details of the
-        # built-in comment model's spam filtering system, so they might not
-        # be present on a custom comment model subclass. If they exist, we 
-        # should filter on them.
-        field_names = [f.name for f in self.comment_model._meta.fields]
-        
-        # subclasses will filter is_public themselves.
-        # if 'is_public' in field_names:
-        #    qs = qs.filter(is_public=False) # changed line is here
-        
-        if getattr(settings, 'COMMENTS_HIDE_REMOVED', True) and 'is_removed' in field_names:
-            qs = qs.filter(is_removed=False)
-        
+        )        
         return qs
-
-class MpttCommentListNodeWithHidden(BaseMpttCommentWithoutFilteringNode):
-
-    # FIXME: doc, and what about parameters beside "as" ?
-    
-    def get_query_set(self, context):
-        qs = super(MpttCommentListNodeWithHidden, self).get_query_set(context)
-        return qs.filter(is_public=False)
         
     def get_context_value_from_queryset(self, context, qs):
         return qs
@@ -147,10 +125,28 @@ class MpttCommentListNodeWithHidden(BaseMpttCommentWithoutFilteringNode):
         qs = self.get_query_set(context)
         context[self.as_varname] = self.get_context_value_from_queryset(context, qs)
         return ''
-        
-class MpttCommentHiddenCountNode(MpttCommentListNodeWithHidden):
 
-    """Insert a count of hidden comments into the context."""
+class MpttCommentPrivateOnlyListNode(BaseMpttCommentWithoutFilteringNode):
+
+    """
+    Insert a list of 'private' (is_public=False) comments into the context.
+    Does NOT include removed comments, only non public ones. Useful to display
+    the comments awaiting moderation to a moderator.
+    """
+
+    # FIXME: what about parameters beside "as" ?
+    
+    def get_query_set(self, context):
+        qs = super(MpttCommentPrivateOnlyListNode, self).get_query_set(context)
+        return qs.filter(is_public=False, is_removed=False)
+        
+class MpttCommentPrivateOnlyCountNode(MpttCommentPrivateOnlyListNode):
+
+    """
+    Insert a count of 'private' (is_public=False) comments into the context.
+    Does NOT include removed comments, only non public ones. Useful to display
+    the number of comments awaiting moderation.
+    """
             
     def get_context_value_from_queryset(self, context, qs):
         return qs.count()
@@ -260,7 +256,7 @@ class MpttSpecialTreeListNode(MpttCommentListNode):
             qs = qs.values_list('tree_id', flat=True).annotate(max_date=Max('submit_date')).order_by('-max_date')
         return qs
 
-def get_mptt_comment_hidden_count(parser, token):
+def get_mptt_comment_private_count(parser, token):
     """
     Gets the non public comment count for the given params and populates the template
     context with a variable containing that value, whose name is defined by the
@@ -268,12 +264,12 @@ def get_mptt_comment_hidden_count(parser, token):
 
     Syntax::
 
-        {% get_mptt_comment_hidden_count for [object] as [varname]  %}
-        {% get_mptt_comment_hidden_count for [app].[model] [object_id] as [varname]  %}
+        {% get_mptt_comment_private_count for [object] as [varname]  %}
+        {% get_mptt_comment_private_count for [app].[model] [object_id] as [varname]  %}
 
     """
 
-    return MpttCommentHiddenCountNode.handle_token(parser, token)
+    return MpttCommentPrivateOnlyCountNode.handle_token(parser, token)
         
 def get_mptt_comment_toplevel_count(parser, token):
     """
@@ -300,13 +296,13 @@ def get_mptt_comments_threads(parser, token):
     """
     return MpttSpecialTreeListNode.handle_token(parser, token)
 
-def get_comment_list_hidden(parser, token):
+def get_comment_list_private(parser, token):
     """
-    Gets a flat list of comments and populates the template
+    Gets a flat list of non public comments and populates the template
     context with a variable containing that value, whose name is defined by the
     'as' clause.
     """
-    return MpttCommentListNodeWithHidden.handle_token(parser, token)    
+    return MpttCommentPrivateOnlyListNode.handle_token(parser, token)    
         
 def get_mptt_comment_list(parser, token):
     """
@@ -420,9 +416,9 @@ register.simple_tag(mptt_comment_form_target)
 register.simple_tag(mptt_comments_media)
 register.simple_tag(mptt_comments_media_css)
 register.simple_tag(mptt_comments_media_js)
-register.tag(get_comment_list_hidden)
+register.tag(get_comment_list_private)
 register.tag(get_mptt_comment_list)
 register.tag(get_mptt_comments_threads)
-register.tag(get_mptt_comment_hidden_count)
+register.tag(get_mptt_comment_private_count)
 register.tag(get_mptt_comment_toplevel_count)
 register.simple_tag(display_comment_toplevel_for)
