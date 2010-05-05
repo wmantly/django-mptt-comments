@@ -33,6 +33,11 @@ def comment_callback_for_notification(sender, request=None, comment=None, **kwar
     if not notification:
         return
         
+    if not comment.is_public and not getattr(settings, 'MPTT_COMMENTS_SEND_NOTICES_FOR_NONPUBLIC', True):
+        # If comment is not public and MPTT_COMMENTS_SEND_NOTICES_FOR_NONPUBLIC is False, we don't
+        # send the notifications at all.
+        return
+        
     infodict = {"user": comment.user, "comment": comment, "object": comment.content_object }
         
     if comment.parent:
