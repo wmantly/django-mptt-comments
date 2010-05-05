@@ -33,8 +33,7 @@ def comment_callback_for_notification(sender, request=None, comment=None, **kwar
     if not notification:
         return
         
-    user = request.user
-    infodict = {"user": user, "comment": comment, "object": comment.content_object }
+    infodict = {"user": comment.user, "comment": comment, "object": comment.content_object }
         
     if comment.parent:
         # Comment has a parent, we'll use the _replied notices
@@ -57,11 +56,11 @@ def comment_callback_for_notification(sender, request=None, comment=None, **kwar
     # parent comment, since he'll receive a separate notice anyway
     if friends:
         notification.send((x['friend'] for x in
-            Friendship.objects.friends_for_user(request.user) if x['friend'] != comment.parent.user),
+            Friendship.objects.friends_for_user(user) if x['friend'] != comment.parent.user),
             "comment_friend_%s" % (notice_type_suffix, ), infodict
         )
     if relationships:
-        followers = request.user.relationships.followers()
+        followers = user.relationships.followers()
         if comment.parent and comment.parent.user:
             followers = followers.exclude(username=comment.parent.user.username)
         notification.send(followers, "comment_friend_%s" % (notice_type_suffix, ), infodict)
