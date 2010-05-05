@@ -126,10 +126,10 @@ class BaseMpttCommentWithoutFilteringNode(BaseMpttCommentNode):
         context[self.as_varname] = self.get_context_value_from_queryset(context, qs)
         return ''
 
-class MpttCommentPrivateOnlyListNode(BaseMpttCommentWithoutFilteringNode):
+class MpttCommentInModerationOnlyListNode(BaseMpttCommentWithoutFilteringNode):
 
     """
-    Insert a list of 'private' (is_public=False) comments into the context.
+    Insert a list of 'in moderation' (is_public=False) comments into the context.
     Does NOT include removed comments, only non public ones. Useful to display
     the comments awaiting moderation to a moderator.
     """
@@ -137,13 +137,13 @@ class MpttCommentPrivateOnlyListNode(BaseMpttCommentWithoutFilteringNode):
     # FIXME: what about parameters beside "as" ?
     
     def get_query_set(self, context):
-        qs = super(MpttCommentPrivateOnlyListNode, self).get_query_set(context)
+        qs = super(MpttCommentInModerationOnlyListNode, self).get_query_set(context)
         return qs.filter(is_public=False, is_removed=False)
         
-class MpttCommentPrivateOnlyCountNode(MpttCommentPrivateOnlyListNode):
+class MpttCommentInModerationOnlyCountNode(MpttCommentInModerationOnlyListNode):
 
     """
-    Insert a count of 'private' (is_public=False) comments into the context.
+    Insert a count of 'in moderation' (is_public=False) comments into the context.
     Does NOT include removed comments, only non public ones. Useful to display
     the number of comments awaiting moderation.
     """
@@ -256,20 +256,20 @@ class MpttSpecialTreeListNode(MpttCommentListNode):
             qs = qs.values_list('tree_id', flat=True).annotate(max_date=Max('submit_date')).order_by('-max_date')
         return qs
 
-def get_mptt_comment_private_count(parser, token):
+def get_mptt_comment_inmoderation_count(parser, token):
     """
-    Gets the non public comment count for the given params and populates the template
+    Gets the non public, non removed comment count for the given params and populates the template
     context with a variable containing that value, whose name is defined by the
     'as' clause.
 
     Syntax::
 
-        {% get_mptt_comment_private_count for [object] as [varname]  %}
-        {% get_mptt_comment_private_count for [app].[model] [object_id] as [varname]  %}
+        {% get_mptt_comment_inmoderation_count for [object] as [varname]  %}
+        {% get_mptt_comment_inmoderation_count for [app].[model] [object_id] as [varname]  %}
 
     """
 
-    return MpttCommentPrivateOnlyCountNode.handle_token(parser, token)
+    return MpttCommentInModerationOnlyCountNode.handle_token(parser, token)
         
 def get_mptt_comment_toplevel_count(parser, token):
     """
@@ -296,13 +296,13 @@ def get_mptt_comments_threads(parser, token):
     """
     return MpttSpecialTreeListNode.handle_token(parser, token)
 
-def get_comment_list_private(parser, token):
+def get_comment_list_inmoderation(parser, token):
     """
-    Gets a flat list of non public comments and populates the template
+    Gets a flat list of non public, non removed comments and populates the template
     context with a variable containing that value, whose name is defined by the
     'as' clause.
     """
-    return MpttCommentPrivateOnlyListNode.handle_token(parser, token)    
+    return MpttCommentInModerationOnlyListNode.handle_token(parser, token)    
         
 def get_mptt_comment_list(parser, token):
     """
@@ -416,9 +416,9 @@ register.simple_tag(mptt_comment_form_target)
 register.simple_tag(mptt_comments_media)
 register.simple_tag(mptt_comments_media_css)
 register.simple_tag(mptt_comments_media_js)
-register.tag(get_comment_list_private)
+register.tag(get_comment_list_inmoderation)
 register.tag(get_mptt_comment_list)
 register.tag(get_mptt_comments_threads)
-register.tag(get_mptt_comment_private_count)
+register.tag(get_mptt_comment_inmoderation_count)
 register.tag(get_mptt_comment_toplevel_count)
 register.simple_tag(display_comment_toplevel_for)
