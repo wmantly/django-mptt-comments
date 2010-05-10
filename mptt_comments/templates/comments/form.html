@@ -2,7 +2,7 @@
     {% load comments %}
     {% load i18n %}
     <div class="comment_form">
-    <form action="{% comment_form_target %}" method="POST">
+    <form action="{% comment_form_target %}" method="POST">{% csrf_token %}
         <fieldset>
             <ul>
             {% for field in form %}
@@ -29,7 +29,6 @@
                   <input type="submit" name="preview" class="submit-preview" value="{% trans 'Preview' %}">
                 </li>
             </ul>
-            {% csrf_token %}
         </fieldset>
     </form>
     </div>
