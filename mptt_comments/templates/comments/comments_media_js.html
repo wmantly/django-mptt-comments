@@ -18,7 +18,7 @@
         function update_replies_count(nxt) {
             var parents = nxt.parents('.comment')
             parents.each(function() {
-                var item = $("#c" + this.id + " > .comment_content > .comment_reply_links > .comment_replies ")              
+                var item = $("#" + this.id + " > .comment_content > .comment_reply_links > .comment_replies ")
                 var txt = item.text()
                 if (txt) {
                     txt = txt.replace(reply_count_re, parseInt(reply_count_re.exec(txt)[1], 10) + 1)
