@@ -400,6 +400,8 @@ class MpttCommentCollapseState(template.Node):
         
         if 'post_was_successful' in context:
             return "comment_expanded"
+        elif 'detail_comment' in context and context['detail_comment'] == comment:
+            return "comment_expanded"
         else:
             if comment.level > collapse_levels_above or comment.level < collapse_levels_below:
                 return "comment_collapsed"
