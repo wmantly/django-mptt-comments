@@ -1,9 +1,9 @@
 from django.utils.encoding import force_unicode
 from django.conf import settings
+from django.contrib.comments import get_model
 from django.contrib.comments.forms import CommentForm
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
-from mptt_comments.models import MpttComment
 from django import forms
 import time
 import datetime
@@ -46,9 +46,9 @@ class MpttCommentForm(CommentForm):
         parent_comment = None
         parent_pk = self.cleaned_data.get("parent_pk")
         if parent_pk:
-            parent_comment = MpttComment.objects.get(pk=parent_pk)
+            parent_comment = get_model().objects.get(pk=parent_pk)
             
-        new = MpttComment(
+        new = get_model()(
             content_type = ContentType.objects.get_for_model(self.target_object),
             object_pk    = force_unicode(self.target_object._get_pk_val()),
             user_name    = "",  # self.cleaned_data["name"],

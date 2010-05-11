@@ -30,14 +30,15 @@ class MpttCommentManager(CommentManager):
             rval = rval.filter(is_removed=False)
         return rval
 
-class MpttComment(Comment):
+class AbstractMpttComment(Comment):
+
     title = models.CharField(max_length=60)
     parent = models.ForeignKey('self', related_name='children', blank=True, null=True)
     
     def save(self, *a, **kw):
         if not self.ip_address:
             self.ip_address = '0.0.0.0'
-        super(MpttComment, self).save(*a, **kw)
+        super(AbstractMpttComment, self).save(*a, **kw)
         
     def get_absolute_url(self):
         return urlresolvers.reverse(
@@ -46,7 +47,10 @@ class MpttComment(Comment):
           )
     
     class Meta:
+        abstract = True
         ordering = ('tree_id', 'lft')
+
+class MpttComment(AbstractMpttComment):
     
     objects = MpttCommentManager()
 

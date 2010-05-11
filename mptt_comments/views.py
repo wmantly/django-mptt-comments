@@ -16,8 +16,6 @@ from django.contrib.comments.views.utils import next_redirect
 from django.contrib.comments.views.comments import CommentPostBadRequest
 from django.contrib.comments import signals, get_form, get_model
 
-from mptt_comments.models import MpttComment
-
 def new_comment(request, comment_id=None, *args, **kwargs):
     
     is_ajax = request.GET.get('is_ajax') and '_ajax' or ''
@@ -88,7 +86,7 @@ def post_comment(request, next=None, *args, **kwargs):
         return CommentPostBadRequest(
             "The given content-type %r does not resolve to a valid model." % \
                 escape(ctype))
-    except MpttComment.DoesNotExist:
+    except get_model().DoesNotExist:
         return CommentPostBadRequest(
             "Parent comment with PK %r does not exist." % \
                 escape(parent_pk))
@@ -355,5 +353,5 @@ def count_for_object(request, content_type_id, object_pk, mimetype='text/plain')
         ctype = ContentType.objects.get_for_id(content_type_id)
     except ObjectDoesNotExist:
         raise Http404("No content found for id %s" % content_type_id)
-    count = str(MpttComment.objects.filter(object_pk=object_pk, content_type=ctype).count())
+    count = str(get_model().objects.filter(object_pk=object_pk, content_type=ctype).count())
     return HttpResponse(count, mimetype = mimetype)
