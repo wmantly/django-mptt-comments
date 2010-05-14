@@ -334,6 +334,7 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         
         return render_to_response(
             template_list, {
+                "object" : target,
                 "detail_comment" : comment,
                 "comments" : comments,
                 "bottom_level": bottom_level,
