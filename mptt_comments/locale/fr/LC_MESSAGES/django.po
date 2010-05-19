@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 14:32+0200\n"
-"PO-Revision-Date: 2010-05-04 14:58+0100\n"
+"POT-Creation-Date: 2010-05-19 16:35+0200\n"
+"PO-Revision-Date: 2010-05-19 16:36+0100\n"
 "Last-Translator: Mathieu Pillard <m.pillard@liberation.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,63 +29,77 @@ msgid "Comment Posted"
 msgstr "Commentaire posté"
 
 #: management.py:10
-msgid "you have posted a comment"
-msgstr "vous avez posté un commentaire"
+msgid "You have posted a comment"
+msgstr "Vous avez posté un commentaire"
 
 #: management.py:11
 msgid "Comment Replied"
 msgstr "Réponse Commentaire"
 
 #: management.py:11
-msgid "you have replied to a comment"
-msgstr "vous avez répondu à un commentaire"
+msgid "You have replied to a comment"
+msgstr "Vous avez répondu à un commentaire"
 
 #: management.py:14
 msgid "Reply To Comment Received"
 msgstr "Réponse Commentaire Reçue"
 
 #: management.py:14
-msgid "you have received a reply to a comment"
-msgstr "vous avez reçu une réponse à un commentaire"
+msgid "You have received a reply to a comment"
+msgstr "Vous avez reçu une réponse à un commentaire"
 
 #: management.py:17
 msgid "Friend Posted Comment"
 msgstr "Commentaire Ami Posté"
 
 #: management.py:17
-msgid "a friend has posted a comment"
-msgstr "un ami a répondu à un commentaire"
+msgid "A friend has posted a comment"
+msgstr "Un ami a répondu à un commentaire"
 
 #: management.py:18
 msgid "Friend Replied To Comment"
 msgstr "Réponse Ami Commentaire"
 
 #: management.py:18
-msgid "a friend has replied to a comment"
-msgstr "un ami a répondu à un commentaire"
+msgid "A friend has replied to a comment"
+msgstr "Un ami a répondu à un commentaire"
+
+#: templates/comments/_comment_meta.html:3
+msgid "Commented by"
+msgstr "Ecrit par"
+
+#: templates/comments/_comment_meta.html:6
+msgid "at"
+msgstr "à"
 
 #: templates/comments/_comment_replies.html:8
 msgid "hidden replies"
 msgstr "réponses supplémentaires"
 
 #: templates/comments/_comment_replies.html:11
-#: templates/comments/comments_media_js.html:31
+#: templates/comments/comments_media_js.html:27
 msgid "replies"
 msgstr "réponses"
 
-#: templates/comments/_comment_replies.html:17
+#: templates/comments/_comment_replies.html:18
 #: templates/comments/display_comments_toplevel.html:25
-#: templates/comments/alternate/display_comments_toplevel.html:28
+#: templates/comments/alternate/display_comments_toplevel.html:27
 msgid "Post a new comment"
 msgstr "Poster un nouveau commentaire"
 
-#: templates/comments/_comment_replies.html:20
+#: templates/comments/_comment_replies.html:21
 msgid "Reply to this comment"
 msgstr "Répondre à ce commentaire"
 
-#: templates/comments/_comment_replies.html:23
+#: templates/comments/_comment_replies.html:24
 msgid "Flag this comment"
 msgstr "Signaler ce commentaire"
+
+#: templates/comments/_comment_title.html:5
+#: templates/comments/display_comment.html:21
+#: templates/comments/alternate/display_comment_toplevel.html:17
+msgid "Comment removed"
+msgstr "Commentaire supprimé"
 
 #: templates/comments/_comments_remaining.html:6
 #: templates/comments/_subcomments_remaining.html:6
@@ -97,30 +111,17 @@ msgstr "Encore"
 msgid "comments left"
 msgstr "commentaires restants"
 
-#: templates/comments/comments_media_js.html:59
+#: templates/comments/comments_media_js.html:56
 msgid "Your comment was posted."
 msgstr "Votre commentaire a été posté"
 
-#: templates/comments/display_comment.html:18
-#: templates/comments/display_comment.html:35
-#: templates/comments/alternate/display_comment_toplevel.html:14
-#: templates/comments/alternate/display_comment_toplevel.html:31
-msgid "Comment removed"
-msgstr "Commentaire supprimé"
-
-#: templates/comments/display_comment.html:28
-#: templates/comments/alternate/display_comment_toplevel.html:24
-msgid "Commented by"
-msgstr "Ecrit par"
-
-#: templates/comments/display_comment.html:31
-#: templates/comments/alternate/display_comment_toplevel.html:27
-msgid "at"
-msgstr "à"
+#: templates/comments/comments_media_js.html:66
+msgid "Your comment was posted, it is now awaiting moderation to be displayed."
+msgstr "Votre commentaire a été posté, il est maintenant en attente de moderation pour être affiché"
 
 #: templates/comments/display_comments_toplevel.html:8
 #: templates/comments/subtree.html:14
-#: templates/comments/alternate/display_comments_toplevel.html:8
+#: templates/comments/alternate/display_comments_toplevel.html:13
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -144,6 +145,11 @@ msgstr "Revenir sur la page précédente"
 msgid "Comment preview"
 msgstr "Prévisualisation de votre commentaire"
 
+#: templates/comments/alternate/display_comments_toplevel.html:13
+#, python-format
+msgid "(<span id=\"comment_count\">%(comment_count)s</span> comments in <span id=\"comment_toplevel_count\">%(comment_toplevel_count)s</span> threads)"
+msgstr "(<span id=\"comment_count\">%(comment_count)s</span> commentaires dans <span id=\"comment_toplevel_count\">%(comment_toplevel_count)s</span> fils)"
+
 #: templates/notification/comment_friend_posted/notice.html:2
 #, python-format
 msgid "<a href=\"%(user_url)s\">%(user)s</a> has posted a <a href=\"%(comment_url)s\">new comment</a> on <em><a href=\"%(object_url)s\">%(object)s</a></em>."
@@ -151,8 +157,8 @@ msgstr "<a href=\"%(user_url)s\">%(user)s</a> a posté un <a href=\"%(comment_ur
 
 #: templates/notification/comment_friend_replied/notice.html:4
 #, python-format
-msgid "<a href=\"%(user_url)s\">%(user)s</a> has <a href=\"%(comment_url)s\">replied</a> to a <a href=\"%(parent_comment_url)s\">comment</a> by <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> on <em><a href=\"%(object.get_absolute_url)s\">%(object)s</a></em>."
-msgstr "<a href=\"%(user_url)s\">%(user)s</a> a <a href=\"%(comment_url)s\">répondu</a> au <a href=\"%(parent_comment_url)s\">commentaire</a> de <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> sur <em><a href=\"%(object.get_absolute_url)s\">%(object)s</a></em>."
+msgid "<a href=\"%(user_url)s\">%(user)s</a> has <a href=\"%(comment_url)s\">replied</a> to a <a href=\"%(parent_comment_url)s\">comment</a> by <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> on <em><a href=\"%(object_url)s\">%(object)s</a></em>."
+msgstr "<a href=\"%(user_url)s\">%(user)s</a> a <a href=\"%(comment_url)s\">répondu</a> à <a href=\"%(parent_comment_url)s\">un commentaire</a> de <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> sur <em><a href=\"%(object_url)s\">%(object)s</a></em>."
 
 #: templates/notification/comment_posted/notice.html:2
 #, python-format
@@ -161,8 +167,8 @@ msgstr "vous avez posté un <a href=\"%(comment_url)s\">nouveau commentaire</a> 
 
 #: templates/notification/comment_replied/notice.html:3
 #, python-format
-msgid "You have <a href=\"%(comment_url)s\">replied</a> to a <a href=\"%(parent_comment_url)s\">comment</a> by <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> on <em><a href=\"%(object.get_absolute_url)s\">%(object)s</a></em>."
-msgstr "Vous avez <a href=\"%(comment_url)s\">répondu</a> au <a href=\"%(parent_comment_url)s\">commentaire</a> de <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> sur <em><a href=\"%(object.get_absolute_url)s\">%(object)s</a></em>."
+msgid "You have <a href=\"%(comment_url)s\">replied</a> to a <a href=\"%(parent_comment_url)s\">comment</a> by <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> on <em><a href=\"%(object_url)s\">%(object)s</a></em>."
+msgstr "Vous avez <a href=\"%(comment_url)s\">répondu</a> à <a href=\"%(parent_comment_url)s\">un commentaire</a> de <a href=\"%(other_user_url)s\">%(parent_comment_user)s</a> sur <em><a href=\"%(object_url)s\">%(object)s</a></em>."
 
 #: templates/notification/comment_reply_received/notice.html:4
 #, python-format
