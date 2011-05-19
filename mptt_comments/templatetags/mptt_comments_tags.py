@@ -395,9 +395,7 @@ class MpttCommentCollapseState(template.Node):
         comment = context[self.varname]
         collapse_levels_above = 'collapse_levels_above' in context and context['collapse_levels_above'] or 1e308
         collapse_levels_below = 'collapse_levels_below' in context and context['collapse_levels_below'] or -1e308        
-        
-        classname = ""
-        
+
         if 'post_was_successful' in context:
             return "comment_expanded"
         elif 'detail_comment' in context and context['detail_comment'] == comment:
