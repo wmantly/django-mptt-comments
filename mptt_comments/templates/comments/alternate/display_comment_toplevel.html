@@ -5,8 +5,8 @@
     
     {# only use this template for level=0 comments, in alternate mode! #}
 
-    <div class="{% include 'comments/_comment_class.html' %}">
-        
+    <div class="{% include 'comments/_comment_class.html' %}"  id="c{{ comment.pk }}">
+     
         {% include "comments/_comment_title.html" %}
         
         <div class="comment_content">
