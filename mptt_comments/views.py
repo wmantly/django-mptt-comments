@@ -340,7 +340,7 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
                 "bottom_level": bottom_level,
                 "cutoff_level": cutoff_level - 1,
                 "collapse_levels_above": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_ABOVE', 2),
-                "collapse_levels_below": comment.level
+                "collapse_levels_below": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_BELOW_DETAIL', True) and comment.level or 0
             }, 
             RequestContext(request, {})
         )
