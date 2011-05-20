@@ -15,6 +15,8 @@ class MpttCommentForm(CommentForm):
     def __init__(self, target_object, parent_comment=None, data=None, initial=None):
         self.parent_comment = parent_comment
         super(MpttCommentForm, self).__init__(target_object, data=data, initial=initial)
+        if self.should_title_be_forced():
+            self.fields['title'].widget.attrs['readonly'] = True
         
         self.fields.keyOrder = [
             'title',
@@ -26,11 +28,23 @@ class MpttCommentForm(CommentForm):
             'security_hash',
             'parent_pk'
         ]
+        
+    def should_title_be_forced(self):
+        return self.parent_comment and getattr(settings, 'MPTT_FORCE_TITLE_ON_REPLIES', False)
+        
+    def generate_title(self):
+        if not self.parent_comment:
+            return force_unicode(self.target_object)
+        else:
+            return u'%s%s' % ((self.parent_comment.title[:3] != u'Re:') and 'Re: ' or u'', self.parent_comment.title)
 
     def clean_title(self):
-        "Truncates title to 60 chrs to avoid integrity errors"
+        if self.should_title_be_forced():
+            self.cleaned_data['title'] = self.generate_title()
+            
+        # Truncates title to 60 chrs to avoid integrity errors
         return self.cleaned_data['title'][:60]
-    
+
     def get_comment_object(self):
         """
         Return a new (unsaved) comment object based on the information in this
@@ -76,8 +90,7 @@ class MpttCommentForm(CommentForm):
             'timestamp'     : str(timestamp),
             'security_hash' : self.initial_security_hash(timestamp),
             'parent_pk'     : self.parent_comment and str(self.parent_comment.pk) or '',
-            'title'         : not self.parent_comment and force_unicode(self.target_object) or
-                                u'%s%s' % ( (self.parent_comment.title[:3] != u'Re:') and 'Re: '  or u'', self.parent_comment.title)
+            'title'         : self.generate_title(),
         }
         
         return security_dict
