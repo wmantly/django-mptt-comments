@@ -140,7 +140,6 @@
             var id = 'c' + (new RegExp("(\\d+)/$").exec(href)[1])
             
             var comment_el = $('#' + id)
-            var content_el = $('.comment_content', comment_el)
                         
             if (comment_el.hasClass('comment_collapsed')) {
                 comment_el.removeClass('comment_collapsed')
