@@ -36,15 +36,15 @@
             {% if forloop.parentloop.last %}
             
                 {% if subcomments_remaining %}
-                    {% ifequal level 0 %}
+                    {% if level == 0 %}
                         {% include "comments/_subcomments_remaining.html" %}
-                    {% endifequal %}
+                    {% endif %}
                 {% endif %}
 
                 {# not the topmost tree, skip closing some levels #}
-                {% if_greater_or_equal level bottom_level %}
+                {% if level >= bottom_level %}
                     </div>
-                {% endif_greater_or_equal %}
+                {% endif %}
                 
             {% else %}
                 </div>

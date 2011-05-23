@@ -3,11 +3,11 @@
 
     <p class="comment_reply_links">
         {% if comment|children_count %}
-            {% ifequal comment.level cutoff_level %}
+            {% if comment.level == cutoff_level %}
                 <a class="comment_replies" data-commentscount="{{ comment|children_count }} href="{% url comments-subtree comment.pk %}">{% blocktrans with comment|children_count as count %}{{ count }} hidden replies{% endblocktrans %}</a>
             {% else %}
                 <span class="comment_replies" data-commentscount="{{ comment|children_count }}">{% blocktrans with comment|children_count as count %}{{ count }} replies{% endblocktrans %}</span>
-            {% endifequal %} |        
+            {% endif %} |        
         {% else %}
             <span class="comment_replies" data-commentscount="0"></span>
         {% endif %}

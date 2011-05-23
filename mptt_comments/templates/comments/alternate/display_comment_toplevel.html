@@ -25,20 +25,20 @@
             
             {% include "comments/_comment_replies.html" %}
             
-            {% ifequal comment.level 0 %}
+            {% if comment.level == 0 %}
                 {% if comment|children_count %}
                     {% get_mptt_comment_list for object as subcomments with comment %}
                 {% endif %}
-            {% endifequal %}
+            {% endif %}
         
         </div>
 
-        {% ifequal comment.level 0 %}
-        {% if comment|children_count and subcomments %}
-            {% for comment, tree in subcomments|tree_info %}
-                {% include "comments/display_comment.html" %}
-            {% endfor %}
-            
+        {% if comment.level == 0 %}
+            {% if comment|children_count and subcomments %}
+                {% for comment, tree in subcomments|tree_info %}
+                    {% include "comments/display_comment.html" %}
+                {% endfor %}
+                
+            {% endif %}
         {% endif %}
-        {% endifequal %}
     </div>

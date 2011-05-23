@@ -7,7 +7,7 @@
             <ul>
             {% for field in form %}
                 {% if not field.is_hidden %}
-                <li class="{% if not field.field.required %}not{% endif %}required{% if field.errors %} errors{% endif %}{% ifequal field.name 'honeypot' %} hidden{% endifequal %}">
+                <li class="{% if not field.field.required %}not{% endif %}required{% if field.errors %} errors{% endif %}{% if field.name == 'honeypot' %} hidden{% endif %}">
                     {{ field.label_tag }}
                     {{ field }}
                     {{ field.errors }}
