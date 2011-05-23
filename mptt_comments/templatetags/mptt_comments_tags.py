@@ -351,17 +351,20 @@ def mptt_comment_form_target():
 def children_count(comment):
     return (comment.rght - comment.lft) / 2
 
-def mptt_comments_media():
+def mptt_comments_media(context):
+    return {
+        'MEDIA_URL' : context['MEDIA_URL']
+    }
 
-    return mark_safe( render_to_string( ('comments/comments_media.html',) , { }) )
+def mptt_comments_media_js(context):
+    return {
+        'MEDIA_URL' : context['MEDIA_URL']
+    }
     
-def mptt_comments_media_css():
-
-    return mark_safe( render_to_string( ('comments/comments_media_css.html',) , { }) )
-    
-def mptt_comments_media_js():
-
-    return mark_safe( render_to_string( ('comments/comments_media_js.html',) , { }) )
+def mptt_comments_media_css(context):
+    return {
+        'MEDIA_URL' : context['MEDIA_URL']
+    }
     
 def display_comment_toplevel_for(target):
 
@@ -410,15 +413,18 @@ def mptt_comment_print_collapse_state(parser, token):
     return MpttCommentCollapseState(token)
 
 register.filter(children_count)
+
+register.simple_tag(mptt_comment_form_target)
+register.simple_tag(display_comment_toplevel_for)
+
+register.inclusion_tag('comments/comments_media.html', takes_context=True)(mptt_comments_media)
+register.inclusion_tag('comments/comments_media_css.html', takes_context=True)(mptt_comments_media_css)
+register.inclusion_tag('comments/comments_media_js.html', takes_context=True)(mptt_comments_media_js)
+
 register.tag(get_mptt_comment_form)
 register.tag(mptt_comment_print_collapse_state)
-register.simple_tag(mptt_comment_form_target)
-register.simple_tag(mptt_comments_media)
-register.simple_tag(mptt_comments_media_css)
-register.simple_tag(mptt_comments_media_js)
 register.tag(get_comment_list_inmoderation)
 register.tag(get_mptt_comment_list)
 register.tag(get_mptt_comments_threads)
 register.tag(get_mptt_comment_inmoderation_count)
 register.tag(get_mptt_comment_toplevel_count)
-register.simple_tag(display_comment_toplevel_for)
