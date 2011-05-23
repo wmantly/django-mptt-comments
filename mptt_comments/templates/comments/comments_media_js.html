@@ -1,4 +1,4 @@
-{% load i18n %}
+<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog packages='mptt_comments' %}"></script>
 <script type="text/javascript">
 //<![CDATA[
 
@@ -14,21 +14,17 @@ function is_in(list, item) {
 }
 
 $(document).ready(function() {
-    var reply_count_re = new RegExp("(\\d+)");
-
     function update_replies_count(nxt) {
         var parents = nxt.parents('.comment');
 
         parents.each(function() {
             var item = $("#" + this.id + " > .comment_content > .comment_reply_links > .comment_replies ");
-            var txt = item.text();
-            if (txt) {
-                txt = txt.replace(reply_count_re, parseInt(reply_count_re.exec(txt)[1], 10) + 1);
-            }
-            else {
-                txt = '1 {% trans "replies" %}';
-            }
-            item.text(txt);
+            var count = parseInt(item.data('commentscount'), 10) + 1;
+            item.data('commentscount', count);
+            var d = {
+                count: count
+            };
+            item.text(interpolate(ngettext('%(count)s reply', '%(count)s replies', d.count), d, true));
         });
     }
 
@@ -66,14 +62,14 @@ $(document).ready(function() {
                             var comment_count = $('#comment_count');
                             var toplevel_comment_count = $('#comment_toplevel_count');
 
-                            nxt.replaceWith('<p>{% trans "Your comment was posted." %}</p>');
+                            nxt.replaceWith('<p>' + gettext("Your comment was posted.") + '</p>');
                             comment_count.text(parseInt(comment_count.text(), 10) + 1);
                             if (post_data.parent_pk !== "") {
                                 toplevel_comment_count.text(parseInt(toplevel_comment_count.text(), 10) + 1);
                             }
                         } else {
                             // the comment was posted but is awaiting moderation, we shouldn't update counts etc
-                            nxt.replaceWith('<p>{% trans "Your comment was posted, it is now awaiting moderation to be displayed." %}</p>');
+                            nxt.replaceWith('<p>' + gettext("Your comment was posted, it is now awaiting moderation to be displayed.") + '</p>');
                         }
                     }
                     else {

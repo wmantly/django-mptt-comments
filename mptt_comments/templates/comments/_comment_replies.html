@@ -4,14 +4,12 @@
     <p class="comment_reply_links">
         {% if comment|children_count %}
             {% ifequal comment.level cutoff_level %}
-                <a class="comment_replies" href="{% url comments-subtree comment.pk %}">
-                    {{ comment|children_count }} {% trans "hidden replies" %}
-                </a>
+                <a class="comment_replies" data-commentscount="{{ comment|children_count }} href="{% url comments-subtree comment.pk %}">{% blocktrans with comment|children_count as count %}{{ count }} hidden replies{% endblocktrans %}</a>
             {% else %}
-                <span class="comment_replies">{{ comment|children_count }} {% trans "replies" %}</span>
+                <span class="comment_replies" data-commentscount="{{ comment|children_count }}">{% blocktrans with comment|children_count as count %}{{ count }} replies{% endblocktrans %}</span>
             {% endifequal %} |        
         {% else %}
-            <span class="comment_replies"></span>
+            <span class="comment_replies" data-commentscount="0"></span>
         {% endif %}
         {% if not comment.is_removed %}
             <a class="comment_post_new" href="#post_new_comment">
