@@ -3,9 +3,10 @@ from django.conf import settings
 from mptt_comments.models import MpttComment
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.comments.models import Comment
+from django.contrib.comments.admin import CommentsAdmin
 from django.contrib.contenttypes.models import ContentType
 
-class MpttCommentsAdmin(admin.ModelAdmin):
+class MpttCommentsAdmin(CommentsAdmin):
     fieldsets = (
         (None,
            {'fields': ('content_type', 'object_pk', 'parent', 'site')}
