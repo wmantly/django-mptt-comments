@@ -32,7 +32,7 @@ class MpttCommentManager(CommentManager):
 
 class AbstractMpttComment(Comment):
 
-    title = models.CharField(max_length=60)
+    title = models.CharField(max_length=255)
     parent = models.ForeignKey('self', related_name='children', blank=True, null=True)
     
     def save(self, *a, **kw):

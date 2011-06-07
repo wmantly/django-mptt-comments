@@ -42,8 +42,8 @@ class MpttCommentForm(CommentForm):
         if self.should_title_be_forced():
             self.cleaned_data['title'] = self.generate_title()
             
-        # Truncates title to 60 chrs to avoid integrity errors
-        return self.cleaned_data['title'][:60]
+        # Truncates title to 255 chrs to avoid integrity errors
+        return self.cleaned_data['title'][:255]
 
     def get_comment_object(self):
         """
