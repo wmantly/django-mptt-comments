@@ -11,24 +11,26 @@
 
     <div class="{% include 'comments/_comment_class.html' %}" id="c{{ comment.pk }}">
         
-    {% include "comments/_comment_title.html" %}
-    
-    <div class="comment_content">
+    <div class="comment_outer">
+        {% include "comments/_comment_title.html" %}
         
-    {% include "comments/_comment_meta.html" %}
+        <div class="comment_content">
+            
+            {% include "comments/_comment_meta.html" %}
+                
+            {% if comment.is_removed %}
+                {% trans "Comment removed" %}
+            {% else %}
+                {{ comment.comment|linebreaks }}
+            {% endif %}
+            
+            {% if debug %}
+                {% include "comments/_comment_debug.html" %}
+            {% endif %}
+            
+            {% include "comments/_comment_replies.html" %}
         
-    {% if comment.is_removed %}
-        {% trans "Comment removed" %}
-    {% else %}
-        {{ comment.comment|linebreaks }}
-    {% endif %}
-    
-    {% if debug %}
-        {% include "comments/_comment_debug.html" %}
-    {% endif %}
-    
-    {% include "comments/_comment_replies.html" %}
-    
+        </div>
     </div>
 
     {% if tree %}
