@@ -14,7 +14,7 @@ $(document).ready(function() {
         var parents = nxt.parents('.comment');
 
         parents.each(function() {
-            var item = $("#" + this.id + " > .comment_content > .comment_reply_links > .comment_replies ");
+            var item = $("#" + this.id + " > .comment_outer > .comment_content > .comment_reply_links > .comment_replies ");
             var count = parseInt(item.data('commentscount'), 10) + 1;
             item.data('commentscount', count);
             var d = {
