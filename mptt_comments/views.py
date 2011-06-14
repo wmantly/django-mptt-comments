@@ -17,6 +17,11 @@ from django.contrib.comments.views.comments import CommentPostBadRequest
 from django.contrib.comments import signals, get_form, get_model
 
 def new_comment(request, comment_id=None, *args, **kwargs):
+    """
+    Display the form used to post a reply. 
+    
+    Expects a comment_id, and an optionnal 'is_ajax' parameter in request.GET.
+    """
     
     is_ajax = request.GET.get('is_ajax') and '_ajax' or ''
     
