@@ -9,7 +9,7 @@ function is_in(list, item) {
     return false;
 }
 
-$(document).ready(function() {
+jQuery(document).ready(function($) {
     function update_replies_count(nxt) {
         var parents = nxt.parents('.comment');
 
@@ -48,37 +48,55 @@ $(document).ready(function() {
                 post_data[this.name] = this.value;
             });
             post_data['is_ajax'] = 1;
-            $.post(form.attr('action'), post_data, function(data, textStatus, xhrobject) {
-                if (xhrobject.status == 201 || xhrobject.status == 202) {
-                    // we are posting a real comment, not a pre-visualization
-                    if (nxt.hasClass('new_comment_form_wrapper')) {
-                        $('#mptt-comments-tree').append(data);
-                        if (xhrobject.status == 201) {
-                            // the comment was created
-                            var comment_count = $('#comment_count');
-                            var toplevel_comment_count = $('#comment_toplevel_count');
+            $.ajax({
+                type: 'POST',
+                url: form.attr('action'),
+                data: post_data,
+                dataType: 'html',
+                error: function(data, textStatus, xhrobject) {
+                    data = data.responseText;
+                    // User is not logged in or some other error.
+                    // If it's a 403, then we know what we are doing, if not,
+                    // just display some generic error message
+                    nxt.addClass('disabled');
+                    if (data == "") {
+                        data = gettext('An unexpected error occured. Please try again in a few minutes');
+                    }
+                    nxt.append('<div class="error">' + data + '</div>');
+                    $(':input', nxt).attr('disabled', true);
+                },                
+                success: function(data, textStatus, xhrobject) {
+                    if (xhrobject.status == 201 || xhrobject.status == 202) {
+                        // we are posting a real comment, not a pre-visualization
+                        if (nxt.hasClass('new_comment_form_wrapper')) {
+                            $('#mptt-comments-tree').append(data);
+                            if (xhrobject.status == 201) {
+                                // the comment was created
+                                var comment_count = $('#comment_count');
+                                var toplevel_comment_count = $('#comment_toplevel_count');
 
-                            nxt.replaceWith('<p>' + gettext("Your comment was posted.") + '</p>');
-                            comment_count.text(parseInt(comment_count.text(), 10) + 1);
-                            if (post_data.parent_pk !== "") {
-                                toplevel_comment_count.text(parseInt(toplevel_comment_count.text(), 10) + 1);
+                                nxt.replaceWith('<p>' + gettext("Your comment was posted.") + '</p>');
+                                comment_count.text(parseInt(comment_count.text(), 10) + 1);
+                                if (post_data.parent_pk !== "") {
+                                    toplevel_comment_count.text(parseInt(toplevel_comment_count.text(), 10) + 1);
+                                }
+                            } else {
+                                // the comment was posted but is awaiting moderation, we shouldn't update counts etc
+                                nxt.replaceWith('<p>' + gettext("Your comment was posted, it is now awaiting moderation to be displayed.") + '</p>');
                             }
-                        } else {
-                            // the comment was posted but is awaiting moderation, we shouldn't update counts etc
-                            nxt.replaceWith('<p>' + gettext("Your comment was posted, it is now awaiting moderation to be displayed.") + '</p>');
                         }
+                        else {
+                            update_replies_count(nxt);
+                            nxt.replaceWith(data);
+                        }
+                    } else {
+                        // we are pre-visualizing a comment
+                        append_data_and_rebind_form(nxt, data);
                     }
-                    else {
-                        update_replies_count(nxt);
-                        nxt.replaceWith(data);
-                    }
-                } else {
-                    // we are pre-visualizing a comment
-                    append_data_and_rebind_form(nxt, data);
                 }
-            }, "html");
+            }); // end ajax call
             return false;
-        });
+        }); // end submit callback
     }
 
     $('a.comment_reply').live("click", function(e) {

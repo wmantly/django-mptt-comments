@@ -16,6 +16,8 @@ from django.contrib.comments.views.utils import next_redirect
 from django.contrib.comments.views.comments import CommentPostBadRequest
 from django.contrib.comments import signals, get_form, get_model
 
+from mptt_comments.decorators import login_required_ajax
+
 def new_comment(request, comment_id=None, *args, **kwargs):
     """
     Display the form used to post a reply. 
@@ -48,6 +50,7 @@ def new_comment(request, comment_id=None, *args, **kwargs):
         RequestContext(request, {})
     )
 
+@login_required_ajax
 @login_required
 def post_comment(request, next=None, *args, **kwargs):
     """
@@ -60,7 +63,7 @@ def post_comment(request, next=None, *args, **kwargs):
     # Require POST
     if request.method != 'POST':
         return HttpResponseNotAllowed(["POST"])
-        
+    
     is_ajax = request.POST.get('is_ajax') and '_ajax' or ''
 
     # Fill out some initial data fields from an authenticated user, if present
@@ -162,6 +165,10 @@ def confirmation_view(template, doc="Display a confirmation view.", is_ajax=Fals
     """
     Confirmation view generator for the "comment was
     posted/flagged/deleted/approved" views.
+    
+    The HTTP Status code will be different depending on the comment used:
+    - 201 Created for a is_public=True comment
+    - 202 Accepted for a is_public=False comment
     """
     def confirmed(request):
         comment = None
