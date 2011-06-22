@@ -1,4 +1,6 @@
 import textwrap
+import datetime
+
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -123,13 +125,23 @@ def post_comment(request, next=None, *args, **kwargs):
             "comments/%s_preview%s.html" % (model._meta.app_label, is_ajax),
             "comments/preview%s.html" % is_ajax
         ]
+        data = {
+            'comment': form.data.get("comment", ""),
+            'parent': parent_comment,
+            'level': parent_comment.level,
+            'title': form.data.get("title", ""),
+            'submit_date': datetime.datetime.now(),
+            'rght': 0,
+            'lft': 0,
+            'user': request.user,
+        }
+        comment = get_model()(**data)
         return render_to_response(
             template_list, {
-                "comment" : form.data.get("comment", ""),
-                "title" : form.data.get("title", ""),
+                "comment" : comment,
                 "form" : form,
                 "allow_post": not form.errors,
-                "is_ajax" : is_ajax
+                "is_ajax" : is_ajax,
             }, 
             RequestContext(request, {})
         )

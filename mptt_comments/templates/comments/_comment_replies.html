@@ -1,6 +1,6 @@
 {% load mptt_comments_tags %}
 {% load i18n %}
-
+{% if comment.pk %}
     <p class="comment_reply_links">
         {% if comment|children_count %}
             {% if comment.level == cutoff_level %}
@@ -23,3 +23,4 @@
             </a>
         {% endif %}
     </p>
+{% endif %}

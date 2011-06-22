@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
     }
 
     $('a.comment_reply').live("click", function(e) {
-        var parent = $(this).parent('p');
+        var parent = $(this).parents('.comment_outer');
         var nxt = parent.next('.comment_form_wrapper');
 
         if (!nxt.length) {

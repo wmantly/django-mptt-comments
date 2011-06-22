@@ -1,10 +1,5 @@
     {% load i18n %}
     {% if comment %}
-    <div class="comment preview">
-        <p class="comment_title">{{ title }} ({% trans "Comment preview" %})</p>
-        <div class="comment_content">
-            {{ comment|linebreaks }}
-        </div>
-    </div>
+        {% include "comments/display_comment.html" %}
     {% endif %}
     {% include "comments/form.html" %}
