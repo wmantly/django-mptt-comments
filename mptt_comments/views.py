@@ -128,7 +128,7 @@ def post_comment(request, next=None, *args, **kwargs):
         data = {
             'comment': form.data.get("comment", ""),
             'parent': parent_comment,
-            'level': parent_comment.level,
+            'level': parent_comment and parent_comment.level or 0,
             'title': form.data.get("title", ""),
             'submit_date': datetime.datetime.now(),
             'rght': 0,
