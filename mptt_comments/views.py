@@ -134,6 +134,7 @@ def post_comment(request, next=None, *args, **kwargs):
             'rght': 0,
             'lft': 0,
             'user': request.user,
+            'user_name' : request.user.username,
         }
         comment = get_model()(**data)
         return render_to_response(
@@ -150,6 +151,7 @@ def post_comment(request, next=None, *args, **kwargs):
     comment = form.get_comment_object()
     comment.ip_address = request.META.get("REMOTE_ADDR", None)
     comment.user = request.user
+    comment.user_name = request.user.username
 
     # Signal that the comment is about to be saved
     responses = signals.comment_will_be_posted.send(
