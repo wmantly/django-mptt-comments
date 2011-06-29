@@ -107,7 +107,10 @@ jQuery(document).ready(function($) {
         var parent = $(this).parents('.comment_outer');
         var nxt = parent.next('.comment_form_wrapper');
 
-        if (!nxt.length) {
+        if (!parent.length) {
+            nxt = $('.new_comment_form_wrapper');
+        }
+        else if (!nxt.length) {
             nxt = $('<div class="comment_form_wrapper"></div>').insertAfter(parent);
             nxt.hide();
         }

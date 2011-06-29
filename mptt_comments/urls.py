@@ -7,10 +7,14 @@ urlpatterns = patterns('mptt_comments.views',
         'new_comment',
         name='new-comment'
     ),
-    url(r'^reply/(\d+)/$',
+    url(r'^reply/(?P<parent_pk>\d+)/$',
         'new_comment',
         name='comment-reply'
     ),
+    url(r'^new_comment/(?P<content_type>[\w.]+)/(?P<object_pk>\d+)/$',
+        'new_comment',
+        name='comment-toplevel-reply'
+    ),    
     url(r'^post/$',
         'post_comment',
         name='comments-post-comment'

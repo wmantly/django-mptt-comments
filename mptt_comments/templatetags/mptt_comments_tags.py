@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
 from django.db.models import Max, Count
+from django.core.urlresolvers import reverse
 
 register = template.Library()
 
@@ -92,6 +93,18 @@ class MpttCommentFormNode(BaseMpttCommentNode):
 
     def render(self, context):
         context[self.as_varname] = self.get_form(context)
+        return ''
+        
+class MpttCommentNewLinkNode(MpttCommentFormNode):
+    """Get the url to post a new comment"""
+    
+    def get_link(self, context):
+        ctype, object_pk = self.get_target_ctype_pk(context)
+        content_type = "%s.%s" % (ctype.app_label, ctype.model)
+        return reverse('comment-toplevel-reply', kwargs={'content_type': content_type, 'object_pk': object_pk})
+        
+    def render(self, context):
+        context[self.as_varname] = self.get_link(context)
         return ''
         
 class MpttCommentTopLevelCountNode(BaseMpttCommentNode):
@@ -336,6 +349,17 @@ def get_mptt_comment_form(parser, token):
         {% get_comment_form for [app].[model] [object_id] as [varname] %}
     """
     return MpttCommentFormNode.handle_token(parser, token)
+    
+def get_mptt_new_comment_link(parser, token):
+    """
+    Get a link to post a new comment.
+
+    Syntax::
+
+        {% get_mptt_new_comment_link for [object] as [varname] %}
+        {% get_mptt_new_comment_link for [app].[model] [object_id] as [varname] %}
+    """
+    return MpttCommentNewLinkNode.handle_token(parser, token)
 
 
 def mptt_comment_form_target():
@@ -422,6 +446,7 @@ register.inclusion_tag('comments/comments_media_css.html', takes_context=True)(m
 register.inclusion_tag('comments/comments_media_js.html', takes_context=True)(mptt_comments_media_js)
 
 register.tag(get_mptt_comment_form)
+register.tag(get_mptt_new_comment_link)
 register.tag(mptt_comment_print_collapse_state)
 register.tag(get_comment_list_inmoderation)
 register.tag(get_mptt_comment_list)

@@ -20,7 +20,43 @@ from django.contrib.comments import signals, get_form, get_model
 
 from mptt_comments.decorators import login_required_ajax
 
-def new_comment(request, comment_id=None, *args, **kwargs):
+def _lookup_content_object(data):
+    # Look up the object we're trying to comment about
+    ctype = data.get("content_type")
+    object_pk = data.get("object_pk")
+    parent_pk = data.get("parent_pk")
+    
+    if parent_pk:
+        try:
+            parent_comment = get_model().objects.get(pk=parent_pk)
+            target = parent_comment.content_object
+            model = target.__class__
+        except get_model().DoesNotExist:
+            return CommentPostBadRequest(
+                "Parent comment with PK %r does not exist." % \
+                    escape(parent_pk))
+    elif ctype and object_pk:
+        try:
+            parent_comment = None
+            model = models.get_model(*ctype.split(".", 1))
+            target = model._default_manager.get(pk=object_pk)
+        except TypeError:
+            return CommentPostBadRequest(
+                "Invalid content_type value: %r" % escape(ctype))
+        except AttributeError:
+            return CommentPostBadRequest(
+                "The given content-type %r does not resolve to a valid model." % \
+                    escape(ctype))
+        except ObjectDoesNotExist:
+            return CommentPostBadRequest(
+                "No object matching content-type %r and object PK %r exists." % \
+                    (escape(ctype), escape(object_pk)))
+    else:
+        return CommentPostBadRequest("Missing content_type or object_pk field.")
+
+    return (target, parent_comment, model)
+
+def new_comment(request, parent_pk=None, content_type=None, object_pk=None, *args, **kwargs):
     """
     Display the form used to post a reply. 
     
@@ -28,14 +64,16 @@ def new_comment(request, comment_id=None, *args, **kwargs):
     """
     
     is_ajax = request.GET.get('is_ajax') and '_ajax' or ''
-    
-    if not comment_id:
-        return CommentPostBadRequest("Missing comment id.")
-        
-    parent_comment = get_model().objects.get(pk=comment_id)
-    
-    target = parent_comment.content_object
-    model = target.__class__
+    data = {
+        'parent_pk': parent_pk,    
+        'content_type': content_type,
+        'object_pk': object_pk,
+    }
+    response = _lookup_content_object(data)
+    if isinstance(response, HttpResponse):
+        return response
+    else:
+        target, parent_comment, model = response
     
     # Construct the initial comment form
     form = get_form()(target, parent_comment=parent_comment)
@@ -77,33 +115,11 @@ def post_comment(request, next=None, *args, **kwargs):
         if not data.get('email', ''):
             data["email"] = request.user.email
 
-    # Look up the object we're trying to comment about
-    ctype = data.get("content_type")
-    object_pk = data.get("object_pk")
-    parent_pk = data.get("parent_pk")
-    parent_comment = None
-    if ctype is None or object_pk is None:
-        return CommentPostBadRequest("Missing content_type or object_pk field.")
-    try:
-        model = models.get_model(*ctype.split(".", 1))
-        target = model._default_manager.get(pk=object_pk)
-        if parent_pk:
-            parent_comment = get_model().objects.get(pk=parent_pk)
-    except TypeError:
-        return CommentPostBadRequest(
-            "Invalid content_type value: %r" % escape(ctype))
-    except AttributeError:
-        return CommentPostBadRequest(
-            "The given content-type %r does not resolve to a valid model." % \
-                escape(ctype))
-    except get_model().DoesNotExist:
-        return CommentPostBadRequest(
-            "Parent comment with PK %r does not exist." % \
-                escape(parent_pk))
-    except ObjectDoesNotExist:
-        return CommentPostBadRequest(
-            "No object matching content-type %r and object PK %r exists." % \
-                (escape(ctype), escape(object_pk)))
+    response = _lookup_content_object(data)
+    if isinstance(response, HttpResponse):
+        return response
+    else:
+        target, parent_comment, model = response
 
     # Do we want to preview the comment?
     preview = data.get("submit", "").lower() == "preview" or \
