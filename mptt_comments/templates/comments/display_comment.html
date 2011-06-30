@@ -12,23 +12,30 @@
     <div class="{% include 'comments/_comment_class.html' %}" id="c{{ comment.pk }}">
         
     <div class="comment_outer">
-        {% include "comments/_comment_title.html" %}
+        {% block comment_header %}
+            {% include "comments/_comment_title.html" %}
+        {% endblock %}
         
         <div class="comment_content">
-            
-            {% include "comments/_comment_meta.html" %}
-                
-            {% if comment.is_removed %}
-                {% trans "Comment removed" %}
-            {% else %}
-                {{ comment.comment|linebreaks }}
-            {% endif %}
+            {% block comment_meta %}            
+                {% include "comments/_comment_meta.html" %}
+            {% endblock %}
+
+            {% block comment_body %}
+                {% if comment.is_removed %}
+                    {% trans "Comment removed" %}
+                {% else %}
+                    {{ comment.comment|linebreaks }}
+                {% endif %}
+            {% endblock %}
             
             {% if debug %}
                 {% include "comments/_comment_debug.html" %}
             {% endif %}
             
-            {% include "comments/_comment_replies.html" %}
+            {% block comment_footer %}
+                {% include "comments/_comment_replies.html" %}
+            {% endblock %}
         
         </div>
     </div>
