@@ -56,6 +56,7 @@ def _lookup_content_object(data):
 
     return (target, parent_comment, model)
 
+@login_required_ajax
 def new_comment(request, parent_pk=None, content_type=None, object_pk=None, *args, **kwargs):
     """
     Display the form used to post a reply. 
@@ -242,8 +243,6 @@ comment_done = confirmation_view(
     template = "comments/posted.html",
     doc = """Display a "comment was posted" success page."""
 )
-
-
     
 def comment_tree_json(request, object_list, tree_id, cutoff_level, bottom_level):
     

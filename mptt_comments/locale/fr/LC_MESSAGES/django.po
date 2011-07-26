@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-23 12:22+0200\n"
-"PO-Revision-Date: 2011-05-23 12:26+0100\n"
+"POT-Creation-Date: 2011-07-26 13:43+0200\n"
+"PO-Revision-Date: 2011-07-26 13:45+0100\n"
 "Last-Translator: Mathieu Pillard <m.pillard@liberation.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,13 +17,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: admin.py:13
+#: admin.py:14
 msgid "Content"
 msgstr "Contenu"
 
-#: admin.py:16
+#: admin.py:17
 msgid "Metadata"
 msgstr "Metadonnées"
+
+#: decorators.py:17
+#, python-format
+msgid "Please <a href=\"%(login_url)s\">log-in</a> or <a href=\"%(register_url)s\">create an account</a> before proceeding"
+msgstr "Merci de <a href=\"%(login_url)s\">vous identifier</a> ou de <a href=\"%(register_url)s\">créer un compte</a> avant de continuer."
 
 #: management.py:10
 msgid "Comment Posted"
@@ -98,7 +103,7 @@ msgid "Flag this comment"
 msgstr "Signaler ce commentaire"
 
 #: templates/comments/_comment_title.html:5
-#: templates/comments/display_comment.html:21
+#: templates/comments/display_comment.html:25
 #: templates/comments/alternate/display_comment_toplevel.html:17
 msgid "Comment removed"
 msgstr "Commentaire supprimé"
@@ -135,10 +140,6 @@ msgstr "Votre commentaire a bien été posté"
 msgid "Back to the page you commented on"
 msgstr "Revenir sur la page précédente"
 
-#: templates/comments/preview_comment.html:4
-msgid "Comment preview"
-msgstr "Prévisualisation de votre commentaire"
-
 #: templates/comments/alternate/display_comments_toplevel.html:13
 #, python-format
 msgid "(<span id=\"comment_count\">%(comment_count)s</span> comments in <span id=\"comment_toplevel_count\">%(comment_toplevel_count)s</span> threads)"
@@ -169,6 +170,8 @@ msgstr "Vous avez <a href=\"%(comment_url)s\">répondu</a> à <a href=\"%(parent
 msgid "<a href=\"%(user_url)s\">%(user)s</a> has <a href=\"%(comment_url)s\">replied</a> to <a href=\"%(parent_comment_url)s\">your comment</a> on <em><a href=\"%(object_url)s\">%(object)s</a></em>."
 msgstr "<a href=\"%(user_url)s\">%(user)s</a> a <a href=\"%(comment_url)s\">répondu</a> à <a href=\"%(parent_comment_url)s\">votre commententaire</a> sur <em><a href=\"%(object_url)s\">%(object)s</a></em>."
 
+#~ msgid "Comment preview"
+#~ msgstr "Prévisualisation de votre commentaire"
 #~ msgid "replies"
 #~ msgstr "réponses"
 #~ msgid "Your comment was posted."
