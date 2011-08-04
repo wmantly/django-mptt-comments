@@ -4,12 +4,13 @@ from django.contrib.comments import get_model
 from django.contrib.comments.forms import CommentForm
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 import time
 import datetime
 
 class MpttCommentForm(CommentForm):
-    title = forms.CharField()
+    title = forms.CharField(label=_("Title"))
     parent_pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
     
     def __init__(self, target_object, parent_comment=None, data=None, initial=None):

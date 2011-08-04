@@ -25,6 +25,10 @@ msgstr "Contenu"
 msgid "Metadata"
 msgstr "Metadonnées"
 
+#: forms.py:13
+msgid "Title"
+msgstr "Titre"
+
 #: decorators.py:17
 #, python-format
 msgid "Please <a href=\"%(login_url)s\">log-in</a> or <a href=\"%(register_url)s\">create an account</a> before proceeding"
