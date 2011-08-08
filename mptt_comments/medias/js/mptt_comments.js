@@ -86,7 +86,12 @@ jQuery(document).ready(function($) {
                     if (xhrobject.status == 201 || xhrobject.status == 202) {
                         // we are posting a real comment, not a pre-visualization
                         if (nxt.hasClass('new_comment_form_wrapper')) {
-                            $('#mptt-comments-tree').append(data);
+                            var tree = $('#mptt-comments-tree');
+                            if (tree.data('reversed')) {
+                                tree.prepend(data);
+                            } else {
+                                tree.append(data);
+                            }
                             if (xhrobject.status == 201) {
                                 // the comment was created
                                 var comment_count = $('#comment_count');

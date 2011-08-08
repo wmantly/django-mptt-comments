@@ -246,6 +246,7 @@ class MpttCommentListNode(BaseMpttCommentNode):
         context['bottom_level'] = self.bottom_level
         context['offset'] = self.get_offset()
         context['internal_pagination'] = not getattr(settings, 'MPTT_COMMENTS_DONT_PAGINATE', False)
+        context['reversed'] = self.reverse
         return ''
         
 class MpttSpecialTreeListNode(MpttCommentListNode):
