@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.conf import settings
-from mptt_comments.models import MpttComment
+from django.contrib.comments import get_model
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.comments.models import Comment
 from django.contrib.comments.admin import CommentsAdmin
@@ -39,4 +39,4 @@ try:
 	admin.site.unregister(Comment)
 except:
 	pass
-admin.site.register(MpttComment, MpttCommentsAdmin)
+admin.site.register(get_model(), MpttCommentsAdmin)
