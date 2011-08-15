@@ -67,12 +67,12 @@ jQuery(document).ready(function($) {
             post_data[this.name] = this.value;
         });
 
-        form.bind("submit", function() {
+        form.bind("submit", function(e) {
             var data_dict = $(":input", form).serializeArray();
-
             $.each(data_dict, function() {
                 post_data[this.name] = this.value;
             });
+            $(":input", form).attr('disabled', 'disabled');
             post_data['is_ajax'] = 1;
             $.ajax({
                 type: 'POST',
@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
                     }
                 }
             }); // end ajax call
-            return false;
+            e.preventDefault();
         }); // end submit callback
     }
 
@@ -147,7 +147,7 @@ jQuery(document).ready(function($) {
                 append_data_and_rebind_form(nxt, data);
             }
         });
-        return false;
+        e.preventDefault();
     });
 
     $('a.comment_replies').live("click", function(e) { 
@@ -163,10 +163,10 @@ jQuery(document).ready(function($) {
                 replies_loaded.push(id);
             }, "json");
         }
-        return false;
+        e.preventDefault();
     });
 
-    $('.comment_expand').live("click", function() {
+    $('.comment_expand').live("click", function(e) {
         var href = $(this).attr('href');
         var id = 'c' + (new RegExp("(\\d+)/$").exec(href)[1]);
         var comment_el = $('#' + id);
@@ -179,10 +179,10 @@ jQuery(document).ready(function($) {
             comment_el.addClass('comment_collapsed');
             comment_el.removeClass('comment_expanded');
         }
-        return false;
+        e.preventDefault();
     });
 
-    $('.comments_more').live("click", function() {
+    $('.comments_more').live("click", function(e) {
         $.get($(this).attr('href') + '?is_ajax=1', { }, function(data, textStatus) {
             var comments_for_update = data.comments_for_update;
             var tid = data.tid;
@@ -230,7 +230,7 @@ jQuery(document).ready(function($) {
             }
 
         }, "json");
-        return false;
+        e.preventDefault();
     });
 
     $('.new_comment_form_wrapper').each(function() {
