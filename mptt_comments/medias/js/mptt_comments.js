@@ -235,6 +235,22 @@ jQuery(document).ready(function($) {
         }, "json");
         e.preventDefault();
     });
+    
+    function detailCommentFromHash() {
+        if (location.hash.length > 0) {
+            var r = new RegExp("^#(c\\d+)$").exec(location.hash);
+            if (r.length) {
+                var comment = $('#' + r[1]);
+                if (comment.length) {
+                    $('.detail_comment').removeClass('detail_comment');
+                    comment.addClass('detail_comment');
+                }
+            }
+        }
+    }
+    
+    detailCommentFromHash();
+    window.onhashchange = detailCommentFromHash;
 
     $('.new_comment_form_wrapper').each(function() {
         var nxt = $(this);
