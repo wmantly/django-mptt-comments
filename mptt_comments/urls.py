@@ -41,6 +41,10 @@ urlpatterns = patterns('mptt_comments.views',
         name='comment-detail',
         kwargs={'include_self': True, 'include_ancestors': True}
     ),
+    url(r'^tree/(\d+)/$',
+        'comments_fulltree',
+        name='comment-detail-tree',
+    ),    
     url(r'^count/(\d+)/(\d+)/$',
         'count_for_object',
         name='comments-count'

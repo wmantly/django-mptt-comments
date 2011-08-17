@@ -335,9 +335,31 @@ def comments_more(request, from_comment_pk, restrict_to_tree=False, *args, **kwa
     
     return HttpResponse(simplejson.dumps(json_data), mimetype='application/json')
     
+def comments_fulltree(request, tree_id, *args, **kwargs):
+    try:
+        comments = get_model().objects.filter_hidden_comments().filter(tree_id=tree_id)
+        comment = comments[0]
+    except IndexError:
+        raise Http404("No top level comment found for tree id %s" % tree_id)
+    target = comment.content_object
+    model = target.__class__
+    template_list = [
+        "comments/%s_%s_tree.html" % tuple(str(model._meta).split(".")),
+        "comments/%s_tree.html" % model._meta.app_label,
+        "comments/tree.html"
+    ]
+    return render_to_response(
+        template_list, {
+            "object" : target,
+            "detail_comment": comment,
+            "comments": comments,
+        }, 
+        RequestContext(request, {})
+    )    
+    
 def comments_subtree(request, from_comment_pk, include_self=None, include_ancestors=None, *args, **kwargs):
     
-    comment = get_model().objects.select_related('content_type').get(pk=from_comment_pk)     
+    comment = get_model().objects.select_related('content_type').get(pk=from_comment_pk)
     
     cutoff_level = comment.level + getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
     bottom_level = not include_ancestors and (comment.level - (include_self and 1 or 0)) or 0
