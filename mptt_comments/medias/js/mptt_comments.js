@@ -57,6 +57,9 @@ jQuery(document).ready(function($) {
         } else {
             $('.' + classname, nxt).html(data);
         }
+        if (nxt.is(':hidden')) {
+            nxt.slideDown();
+        }
     }    
 
     function bind_submit(form, nxt) {
