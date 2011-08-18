@@ -155,7 +155,7 @@ jQuery(document).ready(function($) {
         e.preventDefault();
     });
 
-    $('a.comment_replies').live("click", function(e) { 
+    $('a.comment_cutoff').live("click", function(e) { 
         var href = $(this).attr('href');
         var id = 'c' + (new RegExp("(\\d+)/$").exec(href)[1]);
 
