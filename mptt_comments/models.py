@@ -41,7 +41,7 @@ class AbstractMpttComment(Comment):
         super(AbstractMpttComment, self).save(*a, **kw)
         
     def get_absolute_url(self):
-        tree_url = urlresolvers.reverse("comment-detail", args=(self.tree_id, ))
+        tree_url = urlresolvers.reverse("comment-detail-tree", args=(self.tree_id, ))
         return "%s#c%s" % (tree_url, self.id)
     
     class Meta:
