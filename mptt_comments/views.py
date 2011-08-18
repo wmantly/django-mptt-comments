@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
-from django.shortcuts import render
+from django.template.response import TemplateResponse
 from django.http import Http404, HttpResponse, HttpResponseNotAllowed
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -84,7 +84,7 @@ def new_comment(request, parent_pk=None, content_type=None, object_pk=None, *arg
         "comments/%s_new_form%s.html" % (model._meta.app_label, is_ajax),
         "comments/new_form%s.html" % is_ajax,
     ]
-    return render(request, template_list, { "form" : form })
+    return TemplateResponse(request, template_list, { "form" : form })
 
 @login_required_ajax
 @login_required
@@ -149,11 +149,11 @@ def post_comment(request, next=None, *args, **kwargs):
             'user_name' : request.user.username,
         }
         comment = get_model()(**data)
-        return render(request, template_list, {
-                "comment" : comment,
-                "form" : form,
-                "allow_post": not form.errors,
-                "is_ajax" : is_ajax,
+        return TemplateResponse(request, template_list, {
+            "comment" : comment,
+            "form" : form,
+            "allow_post": not form.errors,
+            "is_ajax" : is_ajax,
         })
 
     # Otherwise create the comment
@@ -201,7 +201,7 @@ def confirmation_view(template, doc="Display a confirmation view.", is_ajax=Fals
             except ObjectDoesNotExist:
                 pass
 
-        response = render(request, template, {
+        response = TemplateResponse(request, template, {
             'comment': comment,
             'is_ajax': is_ajax,
             'success' : True
@@ -368,7 +368,7 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         if include_ancestors:
             comments = list(comment.get_ancestors()) + comments
         
-        return render(request, template_list, {
+        return TemplateResponse(request, template_list, {
             "object" : target,
             "detail_comment" : comment,
             "comments" : comments,
