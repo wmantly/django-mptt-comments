@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import Http404, HttpResponse, HttpResponseNotAllowed
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -84,12 +84,7 @@ def new_comment(request, parent_pk=None, content_type=None, object_pk=None, *arg
         "comments/%s_new_form%s.html" % (model._meta.app_label, is_ajax),
         "comments/new_form%s.html" % is_ajax,
     ]
-    return render_to_response(
-        template_list, {
-            "form" : form,
-        }, 
-        RequestContext(request, {})
-    )
+    return render(request, template_list, { "form" : form })
 
 @login_required_ajax
 @login_required
@@ -154,15 +149,12 @@ def post_comment(request, next=None, *args, **kwargs):
             'user_name' : request.user.username,
         }
         comment = get_model()(**data)
-        return render_to_response(
-            template_list, {
+        return render(request, template_list, {
                 "comment" : comment,
                 "form" : form,
                 "allow_post": not form.errors,
                 "is_ajax" : is_ajax,
-            }, 
-            RequestContext(request, {})
-        )
+        })
 
     # Otherwise create the comment
     comment = form.get_comment_object()
@@ -209,16 +201,11 @@ def confirmation_view(template, doc="Display a confirmation view.", is_ajax=Fals
             except ObjectDoesNotExist:
                 pass
 
-        response = HttpResponse(
-            render_to_string(
-                template, {
-                    'comment': comment,
-                    'is_ajax': is_ajax,
-                    'success' : True
-                },
-                RequestContext(request)
-            )
-        )
+        response = render(request, template, {
+            'comment': comment,
+            'is_ajax': is_ajax,
+            'success' : True
+        })
         response.status_code = comment.is_public and 201 or 202
         return response
 
@@ -381,18 +368,15 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         if include_ancestors:
             comments = list(comment.get_ancestors()) + comments
         
-        return render_to_response(
-            template_list, {
-                "object" : target,
-                "detail_comment" : comment,
-                "comments" : comments,
-                "bottom_level": bottom_level,
-                "cutoff_level": cutoff_level - 1,
-                "collapse_levels_above": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_ABOVE', 2),
-                "collapse_levels_below": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_BELOW_DETAIL', True) and comment.level or 0
-            }, 
-            RequestContext(request, {})
-        )
+        return render(request, template_list, {
+            "object" : target,
+            "detail_comment" : comment,
+            "comments" : comments,
+            "bottom_level": bottom_level,
+            "cutoff_level": cutoff_level - 1,
+            "collapse_levels_above": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_ABOVE', 2),
+            "collapse_levels_below": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_BELOW_DETAIL', True) and comment.level or 0
+        })
 
 def count_for_object(request, content_type_id, object_pk, mimetype='text/plain'):
     """
