@@ -14,13 +14,15 @@ jQuery(document).ready(function($) {
         var parents = nxt.parents('.comment');
 
         parents.each(function() {
-            var item = $("#" + this.id + " > .comment_outer > .comment_content > .comment_reply_links > .comment_replies ");
-            var count = parseInt(item.data('commentscount'), 10) + 1;
-            item.data('commentscount', count);
-            var d = {
-                count: count
-            };
-            item.text(interpolate(ngettext('%(count)s reply', '%(count)s replies', d.count), d, true));
+            var item = $("#c-reply-counts-" + this.id + " .comment_replies");
+            if (item.length > 0) {
+                var count = parseInt(item.data('commentscount'), 10) + 1;
+                item.data('commentscount', count);
+                var d = {
+                    count: count
+                };
+                item.text(interpolate(ngettext('%(count)s reply', '%(count)s replies', d.count), d, true));
+            }
         });
     }
 
