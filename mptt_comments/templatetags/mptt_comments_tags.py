@@ -224,9 +224,10 @@ class MpttCommentListNode(BaseMpttCommentNode):
     def render(self, context):
         qs = self.get_query_set(context)
         context[self.as_varname] = self.get_context_value_from_queryset(context, qs)
+        use_internal_pagination_system = not getattr(settings, 'MPTT_COMMENTS_DONT_PAGINATE', False)
         
-        # 'Remaining comments' : if offset is <= 0, we don't handle those
-        if self.get_offset() > 0:
+        # 'Remaining comments'
+        if self.get_offset() > 0 and use_internal_pagination_system:
             comments_remaining = qs.count()
             comments_remaining = (comments_remaining - self.get_offset()) > 0 and comments_remaining - self.get_offset() or 0
             
@@ -245,7 +246,7 @@ class MpttCommentListNode(BaseMpttCommentNode):
         context['cutoff_level'] = self.cutoff_level
         context['bottom_level'] = self.bottom_level
         context['offset'] = self.get_offset()
-        context['internal_pagination'] = not getattr(settings, 'MPTT_COMMENTS_DONT_PAGINATE', False)
+        context['internal_pagination'] = use_internal_pagination_system
         context['reversed'] = self.reverse
         return ''
         
