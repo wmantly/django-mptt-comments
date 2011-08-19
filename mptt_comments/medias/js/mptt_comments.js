@@ -44,15 +44,15 @@ jQuery(document).ready(function($) {
         // we can re-use it.
         // If not, just use a standard error message.
         
-        if (status != 403 || data == "") {
+        if (status != 403 || data === "") {
             data = gettext('An unexpected error occured. Please try again in a few minutes');
         }
         form = $('form', nxt);
-        classname = "error_ajax"
+        classname = "error_ajax";
         if (form.length) {
             $(':input', form).attr('disabled', true);
             form.addClass('disabled');
-            classname += "_form"
+            classname += "_form";
         }
         if (!$('.' + classname, nxt).length) {
             nxt.append('<div class="' + classname + '">' + data + '</div>');
@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
                 post_data[this.name] = this.value;
             });
             $(":input", form).attr('disabled', 'disabled');
-            post_data['is_ajax'] = 1;
+            post_data.is_ajax = 1;
             $.ajax({
                 type: 'POST',
                 url: form.attr('action'),
