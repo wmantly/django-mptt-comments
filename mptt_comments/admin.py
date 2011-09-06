@@ -22,7 +22,8 @@ class MpttCommentsAdmin(CommentsAdmin):
     raw_id_fields = ('parent', 'user') # We don't really want to get huge <select> with all the comments, users...
     list_display = ('title', 'user', 'getobject', 'level', 'ip_address', 'submit_date', 'is_public', 'is_removed')
     list_filter = ('submit_date', 'is_public', 'is_removed')
-    date_hierarchy = 'submit_date'
+    date_hierarchy = None
+    list_per_page = 40
     ordering = ('-submit_date',)
     search_fields = ('comment', 'user__username', 'user_name', 'user_email', 'user_url', 'ip_address')
 
