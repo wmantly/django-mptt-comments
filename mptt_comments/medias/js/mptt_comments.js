@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
     }
     
     function ajax_error(nxt, data, textStatus) {    
-        status = data.status;
+        var status = data.status;
         data = data.responseText;
         // User is not logged in or some other error.
         // If it's a 403, we assume the HTML content is safe and 
