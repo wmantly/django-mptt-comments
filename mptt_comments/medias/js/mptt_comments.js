@@ -47,8 +47,8 @@ jQuery(document).ready(function($) {
         if (status != 403 || data === "") {
             data = gettext('An unexpected error occured. Please try again in a few minutes');
         }
-        form = $('form', nxt);
-        classname = "error_ajax";
+        var form = $('form', nxt);
+        var classname = "error_ajax";
         if (form.length) {
             $(':input', form).attr('disabled', true);
             form.addClass('disabled');
