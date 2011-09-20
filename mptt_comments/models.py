@@ -1,11 +1,12 @@
 import datetime
-import mptt
 
 from django.db import models
 from django.conf import settings
 from django.contrib.comments.models import Comment
 from django.contrib.comments.managers import CommentManager
 from django.core import urlresolvers
+
+from mptt.models import MPTTModel
 
 class MpttCommentManager(CommentManager):
 
@@ -30,7 +31,7 @@ class MpttCommentManager(CommentManager):
             rval = rval.filter(is_removed=False)
         return rval
 
-class AbstractMpttComment(Comment):
+class AbstractMpttComment(MPTTModel, Comment):
 
     title = models.CharField(max_length=255)
     parent = models.ForeignKey('self', related_name='children', blank=True, null=True)
@@ -51,5 +52,3 @@ class AbstractMpttComment(Comment):
 class MpttComment(AbstractMpttComment):
     
     objects = MpttCommentManager()
-
-mptt.register(MpttComment)
