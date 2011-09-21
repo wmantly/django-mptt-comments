@@ -241,7 +241,7 @@ jQuery(document).ready(function($) {
     function detailCommentFromHash() {
         if (location.hash.length > 0) {
             var r = new RegExp("^#(c\\d+)$").exec(location.hash);
-            if (r.length) {
+            if (r && r.length) {
                 var comment = $('#' + r[1]);
                 if (comment.length) {
                     $('.detail_comment').removeClass('detail_comment');
