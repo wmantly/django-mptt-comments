@@ -328,13 +328,16 @@ def comments_fulltree(request, tree_id, *args, **kwargs):
         comment = comments[0]
     except IndexError:
         raise Http404("No top level comment found for tree id %s" % tree_id)
-    return comments_subtree(request, comment.pk, include_self=True, include_ancestors=True, *args, **kwargs)
+    cutoff = getattr(settings, 'MPTT_COMMENTS_FULLTREE_CUTOFF', getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)) + 1
+    return comments_subtree(request, comment.pk, include_self=True, include_ancestors=True, cutoff=cutoff, *args, **kwargs)
     
-def comments_subtree(request, from_comment_pk, include_self=None, include_ancestors=None, *args, **kwargs):
+def comments_subtree(request, from_comment_pk, include_self=None, include_ancestors=None, cutoff=None, *args, **kwargs):
     
     comment = get_model().objects.select_related('content_type').get(pk=from_comment_pk)
     
-    cutoff_level = comment.level + getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
+    if not cutoff:
+        cutoff = getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
+    cutoff_level = comment.level + cutoff
     bottom_level = not include_ancestors and (comment.level - (include_self and 1 or 0)) or 0
     
     qs = get_model().objects.filter_hidden_comments().filter(
