@@ -20,12 +20,17 @@ class MpttCommentsAdmin(CommentsAdmin):
      )
 
     raw_id_fields = ('parent', 'user') # We don't really want to get huge <select> with all the comments, users...
-    list_display = ('title', 'user', 'getobject', 'level', 'ip_address', 'submit_date', 'is_public', 'is_removed')
+    list_display = ('title', 'user', 'getobject', 'level', 'ip_address', 'submit_date', 'is_public', 'not_is_removed')
     list_filter = ('submit_date', 'is_public', 'is_removed')
     date_hierarchy = None
     list_per_page = 40
     ordering = ('-submit_date',)
     search_fields = ('comment', 'user__username', 'user_name', 'user_email', 'user_url', 'ip_address')
+    
+    def not_is_removed(self, obj):
+        return not obj.is_removed
+    not_is_removed.boolean = True
+    not_is_removed.short_description = _('Not removed')
 
     def getobject(self, obj):
         try:
@@ -34,7 +39,7 @@ class MpttCommentsAdmin(CommentsAdmin):
         except:
             o = "%s : %s" % (obj.content_type, obj.object_pk) 
         return o
-    getobject.short_description = 'Object'
+    getobject.short_description = _('Object')
 
 try:
 	admin.site.unregister(Comment)

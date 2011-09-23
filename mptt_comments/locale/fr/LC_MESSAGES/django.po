@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-26 13:43+0200\n"
-"PO-Revision-Date: 2011-07-26 13:45+0100\n"
+"POT-Creation-Date: 2011-09-23 19:47+0200\n"
+"PO-Revision-Date: 2011-09-23 19:48+0100\n"
 "Last-Translator: Mathieu Pillard <m.pillard@liberation.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -25,14 +25,22 @@ msgstr "Contenu"
 msgid "Metadata"
 msgstr "Metadonnées"
 
-#: forms.py:13
-msgid "Title"
-msgstr "Titre"
+#: admin.py:33
+msgid "Not removed"
+msgstr "Non supprimé"
+
+#: admin.py:42
+msgid "Object"
+msgstr "Objet"
 
 #: decorators.py:17
 #, python-format
 msgid "Please <a href=\"%(login_url)s\">log-in</a> or <a href=\"%(register_url)s\">create an account</a> before proceeding"
 msgstr "Merci de <a href=\"%(login_url)s\">vous identifier</a> ou de <a href=\"%(register_url)s\">créer un compte</a> avant de continuer."
+
+#: forms.py:13
+msgid "Title"
+msgstr "Titre"
 
 #: management.py:10
 msgid "Comment Posted"
@@ -174,6 +182,8 @@ msgstr "Vous avez <a href=\"%(comment_url)s\">répondu</a> à <a href=\"%(parent
 msgid "<a href=\"%(user_url)s\">%(user)s</a> has <a href=\"%(comment_url)s\">replied</a> to <a href=\"%(parent_comment_url)s\">your comment</a> on <em><a href=\"%(object_url)s\">%(object)s</a></em>."
 msgstr "<a href=\"%(user_url)s\">%(user)s</a> a <a href=\"%(comment_url)s\">répondu</a> à <a href=\"%(parent_comment_url)s\">votre commententaire</a> sur <em><a href=\"%(object_url)s\">%(object)s</a></em>."
 
+#~ msgid "Is present"
+#~ msgstr "Est présent"
 #~ msgid "Comment preview"
 #~ msgstr "Prévisualisation de votre commentaire"
 #~ msgid "replies"
