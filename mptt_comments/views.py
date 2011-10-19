@@ -151,6 +151,7 @@ def post_comment(request, next=None, *args, **kwargs):
         comment = get_model()(**data)
         return TemplateResponse(request, template_list, {
             "comment" : comment,
+            "preview" : True,
             "form" : form,
             "allow_post": not form.errors,
             "is_ajax" : is_ajax,
