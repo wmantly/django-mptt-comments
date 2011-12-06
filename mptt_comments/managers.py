@@ -27,5 +27,5 @@ class MpttCommentManager(CommentManager):
         return CommentQuerySet(self.model).select_related('user')
         
     def filter_hidden_comments(self):
-        return super(MpttCommentManager, self).get_query_set().filter_hidden_comments()
+        return self.get_query_set().filter_hidden_comments()
 
