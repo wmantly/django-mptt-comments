@@ -183,7 +183,7 @@ def post_comment(request, next=None, *args, **kwargs):
         request = request
     )
     
-    return next_redirect(data, next, 'comments-comment-done%s' % (is_ajax and '-ajax' or ''), c=comment._get_pk_val())
+    return next_redirect(request, next, 'comments-comment-done%s' % (is_ajax and '-ajax' or ''), c=comment._get_pk_val())
     
 def confirmation_view(template, doc="Display a confirmation view.", is_ajax=False, *args, **kwargs):
     """
