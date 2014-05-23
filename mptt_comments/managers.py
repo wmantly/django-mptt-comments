@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.comments.managers import CommentManager
+from django_comments.managers import CommentManager
 from django.db import models
 
 class CommentQuerySet(models.query.QuerySet):

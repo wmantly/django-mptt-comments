@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.conf import settings
-from django.contrib.comments import get_model
+from django_comments import get_model
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.comments.models import Comment
-from django.contrib.comments.admin import CommentsAdmin
+from django_comments.models import Comment
+from django_comments.admin import CommentsAdmin
 from django.contrib.contenttypes.models import ContentType
 
 class MpttCommentsAdmin(CommentsAdmin):

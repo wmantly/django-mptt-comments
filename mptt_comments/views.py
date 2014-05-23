@@ -14,9 +14,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.html import escape
 from django.utils import datastructures, simplejson
 
-from django.contrib.comments.views.utils import next_redirect
-from django.contrib.comments.views.comments import CommentPostBadRequest
-from django.contrib.comments import signals, get_form, get_model
+from django_comments.views.utils import next_redirect
+from django_comments.views.comments import CommentPostBadRequest
+from django_comments import signals, get_form, get_model
 
 from mptt_comments.decorators import login_required_ajax
 

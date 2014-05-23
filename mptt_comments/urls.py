@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from django.contrib.comments.urls import urlpatterns as contrib_comments_urlpatterns
+from django_comments.urls import urlpatterns as contrib_comments_urlpatterns
 from django.conf import settings
 
 urlpatterns = patterns('mptt_comments.views',

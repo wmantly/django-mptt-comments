@@ -1,5 +1,5 @@
 from django.contrib import comments
-from django.contrib.comments.templatetags.comments import BaseCommentNode, CommentListNode
+from django_comments.templatetags.comments import BaseCommentNode, CommentListNode
 from django import template
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -25,7 +25,7 @@ class BaseMpttCommentNode(BaseCommentNode):
         """
             Class method to parse get_comment_list/count/form and return a Node.
 
-            Forked from django.contrib.comments.templatetags. with_parent, 
+            Forked from django_comments.templatetags. with_parent, 
             root-only concepts borrowed from django-threadedcomments.
         """
         tokens = token.contents.split()
@@ -117,7 +117,7 @@ class MpttCommentTopLevelCountNode(BaseMpttCommentNode):
 class BaseMpttCommentWithoutFilteringNode(BaseMpttCommentNode):
 
     def get_query_set(self, context):
-        # Copied from django.contrib.comments, but changing the is_public filter
+        # Copied from django_comments, but changing the is_public filter
         # Too bad you can't "unfilter" a queryset... :(
         
         ctype, object_pk = self.get_target_ctype_pk(context)

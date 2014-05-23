@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import models
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.core import urlresolvers
 
 from mptt.models import MPTTModel

@@ -1,6 +1,6 @@
 from django.core import urlresolvers
 from django.conf import settings
-from django.contrib.comments.signals import comment_was_posted
+from django_comments.signals import comment_was_posted
 from django.conf import settings
 import django.db.models
 
