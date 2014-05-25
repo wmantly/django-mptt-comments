@@ -23,9 +23,9 @@
                         {{ field }}
                     {% endif %}
                 {% endfor %}
-                {% if allow_post %}
+{% comment %}                 {% if allow_post %} {% endcomment %}
                   <input type="submit" name="submit" class="submit-post" value="{% trans 'Post' %}">
-                {% endif %}
+{% comment %}                 {% endif %} {% endcomment %}
                   <input type="submit" name="preview" class="submit-preview" value="{% trans 'Preview' %}">
                 </li>
             </ul>
