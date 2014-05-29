@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_unicode
 from django.db.models import Max, Count
 from django.core.urlresolvers import reverse
+from django.template import RequestContext
 
 register = template.Library()
 
@@ -392,7 +393,7 @@ def mptt_comments_media_css(context):
         'MEDIA_URL' : context['MEDIA_URL']
     }
     
-def display_comment_toplevel_for(target):
+def display_comment_toplevel_for(context, target):
 
     model = target.__class__
         
@@ -405,7 +406,7 @@ def display_comment_toplevel_for(target):
         template_list, {
             "object" : target
         } 
-        # RequestContext(context['request'], {})
+        ,RequestContext(context['request'], {})
     )
 
 class MpttCommentCollapseState(template.Node):
@@ -441,7 +442,7 @@ def mptt_comment_print_collapse_state(parser, token):
 register.filter(children_count)
 
 register.simple_tag(mptt_comment_form_target)
-register.simple_tag(display_comment_toplevel_for)
+register.simple_tag(takes_context=True)(display_comment_toplevel_for)
 
 register.inclusion_tag('comments/comments_media.html', takes_context=True)(mptt_comments_media)
 register.inclusion_tag('comments/comments_media_css.html', takes_context=True)(mptt_comments_media_css)
