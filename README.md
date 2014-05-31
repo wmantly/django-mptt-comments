@@ -70,5 +70,7 @@ To display the toplevel tree in templates:
 
 `object` is any model object instance You want attach comments to. Usage is uqual to [django-contrib-comments][dcc] (*django.contrib.comments*).
 
+**Django-mptt-comments** uses jQuery for AJAX, You may need to add it to your template.
+
 [mptt]: http://django-mptt.github.io/django-mptt/ "Django mptt documentation"
 [dcc]: http://django-contrib-comments.readthedocs.org/en/latest/ "Django comments documentation"
