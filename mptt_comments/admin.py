@@ -37,7 +37,7 @@ class MpttCommentsAdmin(CommentsAdmin):
             object_type = ContentType.objects.get(model=str(obj.content_type))
             o = object_type.get_object_for_this_type(pk=str(obj.object_pk))
         except:
-            o = "%s : %s" % (obj.content_type, obj.object_pk) 
+            o = u"%s : %s" % (obj.content_type, obj.object_pk) 
         return o
     getobject.short_description = _('Object')
 
