@@ -93,7 +93,7 @@ msgstr "на"
 #: templates/comments/_comment_replies.html:7
 #, python-format
 msgid "%(count)s hidden replies"
-msgstr "Скрытых ответов: %(count)"
+msgstr "Скрытых ответов: %(count)s"
 
 #: templates/comments/_comment_replies.html:9
 #, python-format
