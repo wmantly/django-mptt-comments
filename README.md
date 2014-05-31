@@ -1,7 +1,7 @@
 Django Mptt Comments
 ====================
 
-**Django Mptt Comments**  is a simple way to display threaded comments. It uses [django-mptt][mptt] to extend [django-contrib-comments][dcc] (*ex. django.contrib.comments).
+**Django Mptt Comments**  is a simple way to display threaded comments. It uses [django-mptt][mptt] to extend [django-contrib-comments][dcc] (*ex. django.contrib.comments*).
 
 *This fork contains some quick fixes to make it work with the Django 1.6 (and maybe 1.7).*
 
@@ -69,6 +69,6 @@ To display the toplevel tree in templates:
     {% endblock content %}
 
 `object` is any model object instance You want attach comments to. Usage is uqual to [django-contrib-comments][dcc] (*django.contrib.comments*).
-.
+
 [mptt]: http://django-mptt.github.io/django-mptt/ "Django mptt documentation"
 [dcc]: http://django-contrib-comments.readthedocs.org/en/latest/ "Django comments documentation"
