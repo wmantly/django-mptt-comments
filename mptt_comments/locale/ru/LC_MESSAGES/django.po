@@ -84,7 +84,7 @@ msgstr "Друг ответил на комментарий"
 
 #: templates/comments/_comment_meta.html:3
 msgid "Commented by"
-msgstr "Комментарии от"
+msgstr "Комментарий от"
 
 #: templates/comments/_comment_meta.html:6
 msgid "at"
@@ -104,7 +104,7 @@ msgstr "Ответов: %(count)s"
 #: templates/comments/display_comments_toplevel.html:25
 #: templates/comments/alternate/display_comments_toplevel.html:27
 msgid "Post a new comment"
-msgstr "Оставить новый комментарий"
+msgstr "Новое сообщение"
 
 #: templates/comments/_comment_replies.html:19
 msgid "Reply to this comment"
