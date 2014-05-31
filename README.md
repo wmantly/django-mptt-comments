@@ -14,7 +14,7 @@ Installation
     pip install django-template-utils
     pip install django-contrib-comments
 
-#### Add the needed apps to `INSTALLED_APPS
+#### Add the needed apps to INSTALLED_APPS
 
     'django_comments',
     'template_utils',
