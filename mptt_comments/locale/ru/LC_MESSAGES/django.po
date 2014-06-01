@@ -123,12 +123,12 @@ msgstr "Комментарий удалёт"
 #: templates/comments/_comments_remaining.html:6
 #: templates/comments/_subcomments_remaining.html:6
 msgid "Still"
-msgstr "Всё ещё"
+msgstr "Есть ещё"
 
 #: templates/comments/_comments_remaining.html:6
 #: templates/comments/_subcomments_remaining.html:6
 msgid "comments left"
-msgstr "комментариев оставлено"
+msgstr " "
 
 #: templates/comments/display_comments_toplevel.html:8
 #: templates/comments/subtree.html:14
