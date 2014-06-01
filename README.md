@@ -72,5 +72,8 @@ To display the toplevel tree in templates:
 
 **Django-mptt-comments** uses jQuery for AJAX, you may need to add it to your template.
 
+**Django-mptt-comments** can use [django-notification][ntf] for notifying users about replies, friends posts e.t.c. (see [mptt_comments/management.py](blob/master/mptt_comments/management.py) for notification types supported).
+
 [mptt]: http://django-mptt.github.io/django-mptt/ "Django mptt documentation"
 [dcc]: http://django-contrib-comments.readthedocs.org/en/latest/ "Django comments documentation"
+[ntf]: http://django-notification.readthedocs.org/en/latest/ "Django-notification documentation"
