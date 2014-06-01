@@ -3,11 +3,11 @@
     {% url 'comment-detail' comment.pk as comment_url_expand %}
     {% if comment_url_expand %}
         <a class="comment_expand" href="{{ comment_url_expand }}">
-    {% endif %}
         {% if comment.is_removed %}
             {% trans "Comment removed" %}
         {% else %}
             {{ comment.title }}
         {% endif %}
     </a>
+    {% endif %}
 </p>
