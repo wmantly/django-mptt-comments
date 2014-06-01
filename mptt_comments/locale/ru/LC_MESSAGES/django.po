@@ -118,7 +118,7 @@ msgstr "Пометить"
 #: templates/comments/display_comment.html:25
 #: templates/comments/alternate/display_comment_toplevel.html:17
 msgid "Comment removed"
-msgstr "Комментарий удалёт"
+msgstr "Комментарий удалён"
 
 #: templates/comments/_comments_remaining.html:6
 #: templates/comments/_subcomments_remaining.html:6
