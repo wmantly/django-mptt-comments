@@ -328,12 +328,12 @@ def get_mptt_comment_list(parser, token):
 
     Syntax::
 
-        {% get_comment_list for [object] as [varname]  %}
-        {% get_comment_list for [app].[model] [object_id] as [varname]  %}
+        {% get_mptt_comment_list for [object] as [varname]  %}
+        {% get_mptt_comment_list for [app].[model] [object_id] as [varname]  %}
 
     Example usage::
 
-        {% get_comment_list for event as comment_list %}
+        {% get_mptt_comment_list for event as comment_list %}
         {% for comment in comment_list %}
             ...
         {% endfor %}
