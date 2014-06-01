@@ -32,14 +32,14 @@ Installation
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     )
 
-#### Congigure Your root urls.py
+#### Congigure your root urls.py
 
     url(r'^comments/', include('mptt_comments.urls')),
     url(r'^jsi18n/(?P<packages>\S+?)/$', 'django.views.i18n.javascript_catalog'),
 
 #### Set COMMENTS_APP variable in the settings.py
 
-Add following to Your settings.py:
+Add following to your settings.py:
 
     COMMENTS_APP = 'mptt_comments'
 
@@ -68,9 +68,9 @@ To display the toplevel tree in templates:
     
     {% endblock content %}
 
-`object` is any model object instance You want attach comments to. Usage is uqual to [django-contrib-comments][dcc] (*django.contrib.comments*).
+`object` is any model object instance you want attach comments to. Usage is uqual to [django-contrib-comments][dcc] (*django.contrib.comments*).
 
-**Django-mptt-comments** uses jQuery for AJAX, You may need to add it to your template.
+**Django-mptt-comments** uses jQuery for AJAX, you may need to add it to your template.
 
 [mptt]: http://django-mptt.github.io/django-mptt/ "Django mptt documentation"
 [dcc]: http://django-contrib-comments.readthedocs.org/en/latest/ "Django comments documentation"
