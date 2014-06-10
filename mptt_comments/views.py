@@ -20,6 +20,8 @@ from django_comments import signals, get_form, get_model
 
 from mptt_comments.decorators import login_required_ajax
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 def _lookup_content_object(data):
     # Look up the object we're trying to comment about
     ctype = data.get("content_type")
@@ -369,8 +371,21 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         ]
         
         comments = list(qs)
+        
+        paginator = Paginator(comments, 10) # 20 comments per page
+        page = request.GET.get('page')
+        try:
+            comments = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            comments = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            comments = paginator.page(paginator.num_pages)
+
+        
         if include_ancestors:
-            comments = list(comment.get_ancestors()) + comments
+            comments.object_list = list(comment.get_ancestors()) + comments.object_list
         
         return TemplateResponse(request, template_list, {
             "object" : target,
