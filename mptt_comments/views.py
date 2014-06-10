@@ -372,8 +372,11 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         
         comments = list(qs)
         
+        print comments
+        
         paginator = Paginator(comments, 10) # 20 comments per page
         page = request.GET.get('page')
+
         try:
             comments = paginator.page(page)
         except PageNotAnInteger:
@@ -383,9 +386,20 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
             # If page is out of range (e.g. 9999), deliver last page of results.
             comments = paginator.page(paginator.num_pages)
 
-        
+        print "Ancestors", list(comment.get_ancestors())
         if include_ancestors:
             comments.object_list = list(comment.get_ancestors()) + comments.object_list
+        
+        if comments.has_previous():
+            # Prepend ancestors of the first comment on page
+            comments.object_list = list(comments[0].get_ancestors()) + comments.object_list
+        #if comments.has_next():
+            ## Append choldren of the last comment on page
+            #comments.object_list = comments.object_list + list(comments[len(comments.object_list)-1].get_children())
+        
+        # Test
+        for c in comments.object_list:
+            print "Level %s, lft: %s, body: %s" % (c.level, c.lft, c.comment)
         
         return TemplateResponse(request, template_list, {
             "object" : target,
