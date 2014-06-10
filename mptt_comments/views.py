@@ -392,9 +392,9 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         if comments.has_previous():
             # Prepend ancestors of the first comment on page
             comments.object_list = list(comments[0].get_ancestors()) + comments.object_list
-        #if comments.has_next():
-            ## Append choldren of the last comment on page
-            #comments.object_list = comments.object_list + list(comments[len(comments.object_list)-1].get_children())
+        if comments.has_next():
+            # Append children of the last comment on page
+            comments.object_list = comments.object_list + list(comments[len(comments.object_list)-1].get_children())
         
         return TemplateResponse(request, template_list, {
             "object" : target,
