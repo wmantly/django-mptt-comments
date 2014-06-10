@@ -386,12 +386,12 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
             # If page is out of range (e.g. 9999), deliver last page of results.
             comments = paginator.page(paginator.num_pages)
 
-        if include_ancestors:
-            comments.object_list = list(comment.get_ancestors()) + comments.object_list
-        
         if comments.has_previous():
             # Prepend ancestors of the first comment on page
             comments.object_list = list(comments[0].get_ancestors()) + comments.object_list
+        elif include_ancestors:
+            comments.object_list = list(comment.get_ancestors()) + comments.object_list
+            
         if comments.has_next():
             # Append children of the last comment on page
             comments.object_list = comments.object_list + list(comments[len(comments.object_list)-1].get_children())
