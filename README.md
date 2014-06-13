@@ -32,7 +32,7 @@ Installation
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     )
 
-#### Congigure your root urls.py
+#### Configure your root urls.py
 
     url(r'^comments/', include('mptt_comments.urls')),
     url(r'^jsi18n/(?P<packages>\S+?)/$', 'django.views.i18n.javascript_catalog'),
