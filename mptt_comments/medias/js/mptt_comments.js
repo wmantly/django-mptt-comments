@@ -126,7 +126,7 @@ jQuery(document).ready(function($) {
         }); // end submit callback
     }
 
-    $('a.comment_reply').on("click", function(e) {
+    $('#mptt-comments-tree').on("click", 'a.comment_reply', function(e) {
         var parent = $(this).parents('.comment_outer');
         var nxt = parent.next('.comment_form_wrapper');
 
@@ -155,7 +155,7 @@ jQuery(document).ready(function($) {
         e.preventDefault();
     });
 
-    $('a.comment_cutoff').on("click", function(e) { 
+    $('#mptt-comments-tree').on("click", 'a.comment_cutoff', function(e) { 
         var href = $(this).attr('href');
         var id = 'c' + (new RegExp("(\\d+)/$").exec(href)[1]);
 
@@ -171,7 +171,7 @@ jQuery(document).ready(function($) {
         e.preventDefault();
     });
 
-    $('.comment_expand').on("click", function(e) {
+    $('#mptt-comments-tree').on("click", '.comment_expand', function(e) {
         var href = $(this).attr('href');
         var id = 'c' + (new RegExp("(\\d+)/$").exec(href)[1]);
         var comment_el = $('#' + id);
@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
         e.preventDefault();
     });
 
-    $('.comments_more').on("click", function(e) {
+    $('#mptt-comments-tree').on("click", '.comments_more', function(e) {
         $.get($(this).attr('href') + '?is_ajax=1', { }, function(data, textStatus) {
             var comments_for_update = data.comments_for_update;
             var tid = data.tid;
