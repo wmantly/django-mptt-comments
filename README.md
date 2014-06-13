@@ -74,6 +74,17 @@ To display the toplevel tree in templates:
 
 **Django-mptt-comments** can use [django-notification][ntf] for notifying users about replies, friends posts e.t.c. (see [mptt_comments/management.py](mptt_comments/management.py) for notification types supported).
 
+
+#### Pagination
+You can also use pagination in toplevel tree by adding this settings:
+
+    # Enable pagination (default: False)
+    MPTT_COMMENTS_PAGINATION = True
+    # Comments per page (default: 50)
+    MPTT_COMMENTS_PAGINATION_PAGE_LENGTH = 30
+
+
+
 [mptt]: http://django-mptt.github.io/django-mptt/ "Django mptt documentation"
 [dcc]: http://django-contrib-comments.readthedocs.org/en/latest/ "Django comments documentation"
 [ntf]: http://django-notification.readthedocs.org/en/latest/ "Django-notification documentation"
