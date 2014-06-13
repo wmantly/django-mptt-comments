@@ -372,27 +372,35 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         
         comments = list(qs)
         
-        paginator = Paginator(comments, 10) # 20 comments per page
-        page = request.GET.get('page')
+        pagination_on = getattr(settings, 'MPTT_COMMENTS_PAGINATION', False)
+        page_length = getattr(settings, 'MPTT_COMMENTS_PAGINATION_PAGE_LENGTH', 50)
+        
+        if pagination_on:
+            paginator = Paginator(comments, page_length) # comments per page
+            page = request.GET.get('page')
 
-        try:
-            comments = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            comments = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            comments = paginator.page(paginator.num_pages)
+            try:
+                comments = paginator.page(page)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                comments = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                comments = paginator.page(paginator.num_pages)
 
-        if comments.has_previous():
-            # Prepend ancestors of the first comment on page
-            comments.object_list = list(comments[0].get_ancestors()) + comments.object_list
-        elif include_ancestors:
-            comments.object_list = list(comment.get_ancestors()) + comments.object_list
+            if comments.has_previous():
+                # Prepend ancestors of the first comment on page
+                comments.object_list = list(comments[0].get_ancestors()) + comments.object_list
+            elif include_ancestors:
+                comments.object_list = list(comment.get_ancestors()) + comments.object_list
             
-        if comments.has_next():
-            # Append children of the last comment on page
-            comments.object_list = comments.object_list + list(comments[len(comments.object_list)-1].get_children())
+            if comments.has_next():
+                # Append children of the last comment on page
+                comments.object_list = comments.object_list + list(comments[len(comments.object_list)-1].get_children())
+        else:
+            if include_ancestors:
+                comments = list(comment.get_ancestors()) + comments
+        
         
         return TemplateResponse(request, template_list, {
             "object" : target,
@@ -401,7 +409,8 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
             "bottom_level": bottom_level,
             "cutoff_level": cutoff_level - 1,
             "collapse_levels_above": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_ABOVE', 2),
-            "collapse_levels_below": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_BELOW_DETAIL', True) and comment.level or 0
+            "collapse_levels_below": getattr(settings, 'MPTT_COMMENTS_COLLAPSE_BELOW_DETAIL', True) and comment.level or 0,
+            "pagination": pagination_on
         })
 
 def count_for_object(request, content_type_id, object_pk, mimetype='text/plain'):
