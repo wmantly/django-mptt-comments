@@ -372,8 +372,6 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
         
         comments = list(qs)
         
-        print comments
-        
         paginator = Paginator(comments, 10) # 20 comments per page
         page = request.GET.get('page')
 
