@@ -83,7 +83,18 @@ You can also use pagination in toplevel tree by adding this settings:
     # Comments per page (default: 50)
     MPTT_COMMENTS_PAGINATION_PAGE_LENGTH = 30
 
+#### Additional settings
+`MPTT_COMMENTS_OFFSET`: Number of comments displayed before "read more" link appears. Default: 20.
 
+`MPTT_COMMENTS_TOPLEVEL_OFFSET`: Default: 20.
+
+`MPTT_COMMENTS_CUTOFF`: Depth of comments to be shown. Default: 3.
+
+`MPTT_COMMENTS_COLLAPSE_ABOVE`: Default: 2.
+
+`MPTT_COMMENTS_COLLAPSE_BELOW_DETAIL`: Default: True.
+
+`MPTT_COMMENTS_SEND_NOTICES_FOR_NONPUBLIC`: Default: True.
 
 [mptt]: http://django-mptt.github.io/django-mptt/ "Django mptt documentation"
 [dcc]: http://django-contrib-comments.readthedocs.org/en/latest/ "Django comments documentation"
