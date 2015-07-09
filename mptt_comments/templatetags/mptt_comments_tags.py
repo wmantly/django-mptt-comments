@@ -12,7 +12,7 @@ from django.template import RequestContext
 register = template.Library()
 
 class BaseMpttCommentNode(BaseCommentNode):
-    
+
     def __init__(self, ctype=None, object_pk_expr=None, object_expr=None, as_varname=None, root_only=False, with_parent=None, reverse=False, flat=False, comment=None, **kwargs):
         super(BaseMpttCommentNode, self). __init__(ctype=ctype, object_pk_expr=object_pk_expr, object_expr=object_expr, as_varname=as_varname, comment=comment)
         self.with_parent = with_parent
@@ -21,16 +21,16 @@ class BaseMpttCommentNode(BaseCommentNode):
         self.flat = flat
         if self.reverse and not self.root_only:
             raise template.TemplateSyntaxError("'reverse' option is only available with root-only ('comments-more' link at toplevel expects normal order)")
-            
+
     def handle_token(cls, parser, token):
         """
             Class method to parse get_comment_list/count/form and return a Node.
 
-            Forked from django_comments.templatetags. with_parent, 
+            Forked from django_comments.templatetags. with_parent,
             root-only concepts borrowed from django-threadedcomments.
         """
         tokens = token.contents.split()
-        
+
         with_parent = None
         extra_kw = {}
         extra_possible_kw = ('root_only', 'flat', 'reverse', 'sort=mostcommented', 'sort=mostrecentreplies')
@@ -80,14 +80,14 @@ class BaseMpttCommentNode(BaseCommentNode):
             raise template.TemplateSyntaxError("%r tag requires 4, 5, 6 or 7 arguments" % tokens[0])
 
     handle_token = classmethod(handle_token)
-        
+
 class MpttCommentFormNode(BaseMpttCommentNode):
     """Insert a form for the comment model into the context."""
-            
+
     def get_form(self, context):
         ctype, object_pk = self.get_target_ctype_pk(context)
         if object_pk:
-            return comments.get_form()(ctype.get_object_for_this_type(pk=object_pk), 
+            return comments.get_form()(ctype.get_object_for_this_type(pk=object_pk),
                                        parent_comment=None)
         else:
             return None
@@ -95,32 +95,32 @@ class MpttCommentFormNode(BaseMpttCommentNode):
     def render(self, context):
         context[self.as_varname] = self.get_form(context)
         return ''
-        
+
 class MpttCommentNewLinkNode(MpttCommentFormNode):
     """Get the url to post a new comment"""
-    
+
     def get_link(self, context):
         ctype, object_pk = self.get_target_ctype_pk(context)
         content_type = "%s.%s" % (ctype.app_label, ctype.model)
         return reverse('comment-toplevel-reply', kwargs={'content_type': content_type, 'object_pk': object_pk})
-        
+
     def render(self, context):
         context[self.as_varname] = self.get_link(context)
         return ''
-        
+
 class MpttCommentTopLevelCountNode(BaseMpttCommentNode):
 
     """Insert a count of toplevel comments into the context."""
 
     def get_context_value_from_queryset(self, context, qs):
         return qs.filter(level=0).order_by().count()
-        
+
 class BaseMpttCommentWithoutFilteringNode(BaseMpttCommentNode):
 
-    def get_query_set(self, context):
+    def get_queryset(self, context):
         # Copied from django_comments, but changing the is_public filter
         # Too bad you can't "unfilter" a queryset... :(
-        
+
         ctype, object_pk = self.get_target_ctype_pk(context)
         if not object_pk:
             return self.comment_model.objects.none()
@@ -129,14 +129,14 @@ class BaseMpttCommentWithoutFilteringNode(BaseMpttCommentNode):
             content_type = ctype,
             object_pk    = smart_unicode(object_pk),
             site__pk     = settings.SITE_ID,
-        )        
+        )
         return qs
-        
+
     def get_context_value_from_queryset(self, context, qs):
         return qs
 
     def render(self, context):
-        qs = self.get_query_set(context)
+        qs = self.get_queryset(context)
         context[self.as_varname] = self.get_context_value_from_queryset(context, qs)
         return ''
 
@@ -149,11 +149,11 @@ class MpttCommentInModerationOnlyListNode(BaseMpttCommentWithoutFilteringNode):
     """
 
     # FIXME: what about parameters beside "as" ?
-    
-    def get_query_set(self, context):
-        qs = super(MpttCommentInModerationOnlyListNode, self).get_query_set(context)
+
+    def get_queryset(self, context):
+        qs = super(MpttCommentInModerationOnlyListNode, self).get_queryset(context)
         return qs.filter(is_public=False, is_removed=False)
-        
+
 class MpttCommentInModerationOnlyCountNode(MpttCommentInModerationOnlyListNode):
 
     """
@@ -161,21 +161,21 @@ class MpttCommentInModerationOnlyCountNode(MpttCommentInModerationOnlyListNode):
     Does NOT include removed comments, only non public ones. Useful to display
     the number of comments awaiting moderation.
     """
-            
+
     def get_context_value_from_queryset(self, context, qs):
         return qs.count()
-        
+
 class MpttCommentListNode(BaseMpttCommentNode):
 
     offset = getattr(settings, 'MPTT_COMMENTS_OFFSET', 20)
     toplevel_offset = getattr(settings, 'MPTT_COMMENTS_TOPLEVEL_OFFSET', 20)
     cutoff_level = getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
-    bottom_level = 0 
-    
-    def get_query_set(self, context):
-        qs = super(MpttCommentListNode, self).get_query_set(context)
+    bottom_level = 0
+
+    def get_queryset(self, context):
+        qs = super(MpttCommentListNode, self).get_queryset(context)
         cutoff = self.cutoff_level
-        
+
         if self.with_parent:
             if self.with_parent in context:
                 parent = context[self.with_parent]
@@ -186,7 +186,7 @@ class MpttCommentListNode(BaseMpttCommentNode):
                     raise template.TemplateSyntaxError("'%s' doesn't represent a known variable in the context or a tree_id" % self.with_parent)
 
             if isinstance(parent, int):
-                # Interpret parent as a tree_id. 
+                # Interpret parent as a tree_id.
                 # Note: in this mode, we include the corresponding root-node too
                 self.bottom_level = 0
                 qs = qs.filter(tree_id=parent)
@@ -200,12 +200,12 @@ class MpttCommentListNode(BaseMpttCommentNode):
             return qs
         elif self.root_only:
             cutoff = 0
-            
+
         if cutoff >= 0:
             qs = qs.filter(level__lte=cutoff)
-        
+
         return qs
-        
+
     def get_context_value_from_queryset(self, context, qs):
         if self.reverse:
             qs = qs.reverse()
@@ -214,24 +214,24 @@ class MpttCommentListNode(BaseMpttCommentNode):
             return list(qs[:offset])
         # if offset <= 0 or MPTT_COMMENTS_DONT_PAGINATE is True, don't list():
         # the developer will use its own pagination system
-        return qs 
-        
+        return qs
+
     def get_offset(self):
         if self.root_only:
             return self.toplevel_offset
         else:
             return self.offset
-        
+
     def render(self, context):
-        qs = self.get_query_set(context)
+        qs = self.get_queryset(context)
         context[self.as_varname] = self.get_context_value_from_queryset(context, qs)
         use_internal_pagination_system = not getattr(settings, 'MPTT_COMMENTS_DONT_PAGINATE', False)
-        
+
         # 'Remaining comments'
         if self.get_offset() > 0 and use_internal_pagination_system:
             comments_remaining = qs.count()
             comments_remaining = (comments_remaining - self.get_offset()) > 0 and comments_remaining - self.get_offset() or 0
-            
+
             # If we have a parent, then we need to update the subcomments_remaining to paginate
             # each thread independantly.
             if self.with_parent:
@@ -242,7 +242,7 @@ class MpttCommentListNode(BaseMpttCommentNode):
         else:
             context['comments_remaining'] = 0
             context['subcomments_remaining'] = 0
-            
+
         context['collapse_levels_above'] = getattr(settings, 'MPTT_COMMENTS_COLLAPSE_ABOVE', 2)
         context['cutoff_level'] = self.cutoff_level
         context['bottom_level'] = self.bottom_level
@@ -250,24 +250,24 @@ class MpttCommentListNode(BaseMpttCommentNode):
         context['internal_pagination'] = use_internal_pagination_system
         context['reversed'] = self.reverse
         return ''
-        
+
 class MpttSpecialTreeListNode(MpttCommentListNode):
 
     def __init__(self, sort=None, **kwargs):
         super(MpttSpecialTreeListNode, self).__init__(**kwargs)
         self.sort = sort
-        
+
         # Just to be sure, overwrite those, which shouldn't be used, they would
         # mess with our special queries
         self.with_parent = None
         self.flat = False
         self.root_only = False
-   
-    def get_query_set(self, context):
-        qs = super(MpttSpecialTreeListNode, self).get_query_set(context)
-        
+
+    def get_queryset(self, context):
+        qs = super(MpttSpecialTreeListNode, self).get_queryset(context)
+
         if self.sort == 'mostcommented':
-            qs = qs.values_list('tree_id', flat=True).filter(level=0).order_by('-rght')                
+            qs = qs.values_list('tree_id', flat=True).filter(level=0).order_by('-rght')
         elif self.sort == 'mostrecentreplies':
             qs = qs.values_list('tree_id', flat=True).annotate(max_date=Max('submit_date')).order_by('-max_date')
         return qs
@@ -286,7 +286,7 @@ def get_mptt_comment_inmoderation_count(parser, token):
     """
 
     return MpttCommentInModerationOnlyCountNode.handle_token(parser, token)
-        
+
 def get_mptt_comment_toplevel_count(parser, token):
     """
     Gets the toplevel comment count for the given params and populates the template
@@ -301,13 +301,13 @@ def get_mptt_comment_toplevel_count(parser, token):
     """
 
     return MpttCommentTopLevelCountNode.handle_token(parser, token)
-    
+
 def get_mptt_comments_threads(parser, token):
     """
     Gets the list of threads for the given params and populates the template
     context with a variable containing that value, whose name is defined by the
     'as' clause.
-    
+
     Note: This list just contains the tree_ids of each thread
     """
     return MpttSpecialTreeListNode.handle_token(parser, token)
@@ -318,8 +318,8 @@ def get_comment_list_inmoderation(parser, token):
     context with a variable containing that value, whose name is defined by the
     'as' clause.
     """
-    return MpttCommentInModerationOnlyListNode.handle_token(parser, token)    
-        
+    return MpttCommentInModerationOnlyListNode.handle_token(parser, token)
+
 def get_mptt_comment_list(parser, token):
     """
     Gets the list of comments for the given params and populates the template
@@ -352,7 +352,7 @@ def get_mptt_comment_form(parser, token):
         {% get_comment_form for [app].[model] [object_id] as [varname] %}
     """
     return MpttCommentFormNode.handle_token(parser, token)
-    
+
 def get_mptt_new_comment_link(parser, token):
     """
     Get a link to post a new comment.
@@ -387,16 +387,16 @@ def mptt_comments_media_js(context):
     return {
         'MEDIA_URL' : context['MEDIA_URL']
     }
-    
+
 def mptt_comments_media_css(context):
     return {
         'MEDIA_URL' : context['MEDIA_URL']
     }
-    
+
 def display_comment_toplevel_for(context, target):
 
     model = target.__class__
-        
+
     template_list = [
         "comments/%s_%s_display_comments_toplevel.html" % tuple(str(model._meta).split(".")),
         "comments/%s_display_comments_toplevel.html" % model._meta.app_label,
@@ -405,26 +405,26 @@ def display_comment_toplevel_for(context, target):
     return render_to_string(
         template_list, {
             "object" : target
-        } 
+        }
         ,RequestContext(context['request'], {})
     )
 
 class MpttCommentCollapseState(template.Node):
     def __init__(self, token):
         tokens = token.contents.split()
-        
+
         if len(tokens) < 2:
             raise template.TemplateSyntaxError("%s takes one argument" % tokens[0])
-        
+
         self.varname = tokens[1]
 
     def render(self, context):
         if not self.varname in context:
             raise template.TemplateSyntaxError("%s is an invalid context variable" % self.varname)
-        
+
         comment = context[self.varname]
         collapse_levels_above = 'collapse_levels_above' in context and context['collapse_levels_above'] or 1e308
-        collapse_levels_below = 'collapse_levels_below' in context and context['collapse_levels_below'] or -1e308        
+        collapse_levels_below = 'collapse_levels_below' in context and context['collapse_levels_below'] or -1e308
 
         if 'post_was_successful' in context:
             return "comment_expanded"

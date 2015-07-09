@@ -1,5 +1,6 @@
 import textwrap
 import datetime
+import json
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,7 +13,6 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import escape
-from django.utils import datastructures, simplejson
 
 from django_comments.views.utils import next_redirect
 from django_comments.views.comments import CommentPostBadRequest
@@ -27,7 +27,7 @@ def _lookup_content_object(data):
     ctype = data.get("content_type")
     object_pk = data.get("object_pk")
     parent_pk = data.get("parent_pk")
-    
+
     if parent_pk:
         try:
             parent_comment = get_model().objects.get(pk=parent_pk)
@@ -61,14 +61,14 @@ def _lookup_content_object(data):
 @login_required_ajax
 def new_comment(request, parent_pk=None, content_type=None, object_pk=None, *args, **kwargs):
     """
-    Display the form used to post a reply. 
-    
+    Display the form used to post a reply.
+
     Expects a comment_id, and an optionnal 'is_ajax' parameter in request.GET.
     """
-    
+
     is_ajax = request.GET.get('is_ajax') and '_ajax' or ''
     data = {
-        'parent_pk': parent_pk,    
+        'parent_pk': parent_pk,
         'content_type': content_type,
         'object_pk': object_pk,
     }
@@ -77,10 +77,10 @@ def new_comment(request, parent_pk=None, content_type=None, object_pk=None, *arg
         return response
     else:
         target, parent_comment, model = response
-    
+
     # Construct the initial comment form
     form = get_form()(target, parent_comment=parent_comment)
-        
+
     template_list = [
         "comments/%s_%s_new_form%s.html" % tuple(str(model._meta).split(".") + [is_ajax]),
         "comments/%s_new_form%s.html" % (model._meta.app_label, is_ajax),
@@ -101,7 +101,7 @@ def post_comment(request, next=None, *args, **kwargs):
     # Require POST
     if request.method != 'POST':
         return HttpResponseNotAllowed(["POST"])
-    
+
     is_ajax = request.POST.get('is_ajax') and '_ajax' or ''
 
     # Fill out some initial data fields from an authenticated user, if present
@@ -122,10 +122,10 @@ def post_comment(request, next=None, *args, **kwargs):
     # Do we want to preview the comment?
     preview = data.get("submit", "").lower() == "preview" or \
               data.get("preview", None) is not None
-        
-    # Construct the comment form 
+
+    # Construct the comment form
     form = get_form()(target, parent_comment=parent_comment, data=data)
-            
+
     # Check security information
     if form.security_errors():
         return CommentPostBadRequest(
@@ -184,14 +184,14 @@ def post_comment(request, next=None, *args, **kwargs):
         comment = comment,
         request = request
     )
-    
+
     return next_redirect(request, 'comments-comment-done%s' % (is_ajax and '-ajax' or ''), c=comment._get_pk_val())
-    
+
 def confirmation_view(template, doc="Display a confirmation view.", is_ajax=False, *args, **kwargs):
     """
     Confirmation view generator for the "comment was
     posted/flagged/deleted/approved" views.
-    
+
     The HTTP Status code will be different depending on the comment used:
     - 201 Created for a is_public=True comment
     - 202 Accepted for a is_public=False comment
@@ -222,7 +222,7 @@ def confirmation_view(template, doc="Display a confirmation view.", is_ajax=Fals
         """ % (doc, template)
     )
     return confirmed
-    
+
 comment_done_ajax = confirmation_view(
     template = "comments/posted_ajax.html",
     doc = """Display a "comment was posted" success page.""",
@@ -233,12 +233,12 @@ comment_done = confirmation_view(
     template = "comments/posted.html",
     doc = """Display a "comment was posted" success page."""
 )
-    
+
 def comment_tree_json(request, object_list, tree_id, cutoff_level, bottom_level):
-    
+
     if object_list:
         json_comments = {'end_level': object_list[-1].level, 'end_pk': object_list[-1].pk}
-          
+
         template_list = [
             "comments/display_comments_tree.html",
         ]
@@ -248,10 +248,10 @@ def comment_tree_json(request, object_list, tree_id, cutoff_level, bottom_level)
                 "cutoff_level": cutoff_level,
                 "bottom_level": bottom_level,
                 "is_ajax" : True,
-            }, 
+            },
             RequestContext(request, {})
         )
-        
+
         return json_comments
     return {}
 
@@ -263,49 +263,49 @@ def comments_more(request, from_comment_pk, restrict_to_tree=False, *args, **kwa
     collapse_above = getattr(settings, 'MPTT_COMMENTS_COLLAPSE_ABOVE', 2)
     cutoff_level = getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
     bottom_level = 0
-             
+
     qs = get_model().objects.filter_hidden_comments().filter(
         content_type=comment.content_type,
         object_pk=comment.object_pk,
         level__lte=cutoff_level
     )
-    
+
     part1 = Q(tree_id=comment.tree_id) & Q(lft__gte=comment.lft + 1)
     if restrict_to_tree:
-        # Here we only want the nodes with the same root-id and a greater lft value. 
+        # Here we only want the nodes with the same root-id and a greater lft value.
         qs = qs.filter(part1)
         bottom_level = comment.level + 1
     else:
         # Here we need all nodes with a different root-id, or all nodes with
-        # the same root-id and a greater lft value. 
+        # the same root-id and a greater lft value.
         # The default order should do the right thing
-        # 
+        #
         # FIXME: it expects tree_id to be in chronological order!
         part2 = Q(tree_id__gt=comment.tree_id)
         qs = qs.filter(part1 | part2)
-        
+
     until_toplevel = []
     remaining = []
     toplevel_reached = False
     remaining_count = qs.count() - offset
-    
+
     for comment in qs[:offset]:
-        
+
         if comment.level == 0:
             toplevel_reached = True
-            
+
         if toplevel_reached:
             remaining.append(comment)
         else:
             until_toplevel.append(comment)
-    
+
     json_data = {'remaining_count': remaining_count, 'comments_for_update': [], 'comments_tree': {} }
     if restrict_to_tree:
         json_data['tid'] = comment.get_root().id
     else:
         json_data['tid'] = 0
-    
-    for comment in until_toplevel:    
+
+    for comment in until_toplevel:
         json_comment = {'level': comment.level, 'pk': comment.pk, 'parent' : comment.parent_id}
         template_list = [
             "comments/display_comment.html",
@@ -316,15 +316,15 @@ def comments_more(request, from_comment_pk, restrict_to_tree=False, *args, **kwa
                 "cutoff_level": cutoff_level,
                 "collapse_levels_above": collapse_above,
                 "is_ajax" : True,
-            }, 
+            },
             RequestContext(request, {})
         )
         json_data['comments_for_update'].append(json_comment)
-        
+
     json_data['comments_tree'] = comment_tree_json(request, remaining, comment.tree_id, cutoff_level, bottom_level)
-    
-    return HttpResponse(simplejson.dumps(json_data), mimetype='application/json')
-    
+
+    return HttpResponse(json.dumps(json_data), mimetype='application/json')
+
 def comments_fulltree(request, tree_id, *args, **kwargs):
     try:
         comments = get_model().objects.filter_hidden_comments().filter(tree_id=tree_id)
@@ -333,34 +333,34 @@ def comments_fulltree(request, tree_id, *args, **kwargs):
         raise Http404("No top level comment found for tree id %s" % tree_id)
     cutoff = getattr(settings, 'MPTT_COMMENTS_FULLTREE_CUTOFF', getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)) + 1
     return comments_subtree(request, comment.pk, include_self=True, include_ancestors=True, cutoff=cutoff, *args, **kwargs)
-    
+
 def comments_subtree(request, from_comment_pk, include_self=None, include_ancestors=None, cutoff=None, *args, **kwargs):
-    
+
     comment = get_model().objects.select_related('content_type').get(pk=from_comment_pk)
-    
+
     if not cutoff:
         cutoff = getattr(settings, 'MPTT_COMMENTS_CUTOFF', 3)
     cutoff_level = comment.level + cutoff
     bottom_level = not include_ancestors and (comment.level - (include_self and 1 or 0)) or 0
-    
+
     qs = get_model().objects.filter_hidden_comments().filter(
-        tree_id=comment.tree_id, 
+        tree_id=comment.tree_id,
         lft__gte=comment.lft + (not include_self and 1 or 0),
         lft__lte=comment.rght,
         level__lte=cutoff_level - (include_self and 1 or 0)
     )
-    
+
     is_ajax = request.GET.get('is_ajax') and '_ajax' or ''
-    
-    if is_ajax:    
-        
+
+    if is_ajax:
+
         json_data = {'comments_for_update': [], 'comments_tree': {} }
         json_data['comments_tree'] = comment_tree_json(request, list(qs), comment.tree_id, cutoff_level, bottom_level)
-        
-        return HttpResponse(simplejson.dumps(json_data), mimetype='application/json')
-        
+
+        return HttpResponse(json.dumps(json_data), mimetype='application/json')
+
     else:
-        
+
         target = comment.content_object
         model = target.__class__
 
@@ -369,12 +369,12 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
             "comments/%s_subtree.html" % model._meta.app_label,
             "comments/subtree.html"
         ]
-        
+
         comments = list(qs)
-        
+
         pagination_on = getattr(settings, 'MPTT_COMMENTS_PAGINATION', False)
         page_length = getattr(settings, 'MPTT_COMMENTS_PAGINATION_PAGE_LENGTH', 50)
-        
+
         if pagination_on:
             paginator = Paginator(comments, page_length) # comments per page
             page = request.GET.get('page')
@@ -393,15 +393,15 @@ def comments_subtree(request, from_comment_pk, include_self=None, include_ancest
                 comments.object_list = list(comments[0].get_ancestors()) + comments.object_list
             elif include_ancestors:
                 comments.object_list = list(comment.get_ancestors()) + comments.object_list
-            
+
             if comments.has_next():
                 # Append children of the last comment on page
                 comments.object_list = comments.object_list + list(comments[len(comments.object_list)-1].get_children())
         else:
             if include_ancestors:
                 comments = list(comment.get_ancestors()) + comments
-        
-        
+
+
         return TemplateResponse(request, template_list, {
             "object" : target,
             "detail_comment" : comment,
