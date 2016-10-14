@@ -28,10 +28,6 @@
                 {% endif %}
             {% endblock %}
             
-            {% if debug %}
-                {% include "comments/_comment_debug.html" %}
-            {% endif %}
-            
             {% block comment_footer %}
                 {% include "comments/_comment_replies.html" %}
             {% endblock %}

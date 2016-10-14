@@ -1,10 +1,10 @@
-from django.contrib import comments
+import django_comments as comments
 from django_comments.templatetags.comments import BaseCommentNode, CommentListNode
 from django import template
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_text as smart_unicode
 from django.db.models import Max, Count
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
@@ -380,21 +380,21 @@ def children_count(comment):
 
 def mptt_comments_media(context):
     return {
-        'MEDIA_URL' : context['MEDIA_URL']
+        'MEDIA_URL' : 'static/'
     }
 
 def mptt_comments_media_js(context):
     return {
-        'MEDIA_URL' : context['MEDIA_URL']
+        'MEDIA_URL' : 'static/'
     }
 
 def mptt_comments_media_css(context):
     return {
-        'MEDIA_URL' : context['MEDIA_URL']
+        'MEDIA_URL' : 'static/'
     }
 
 def display_comment_toplevel_for(context, target):
-
+    print('target', target)
     model = target.__class__
 
     template_list = [

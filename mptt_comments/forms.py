@@ -1,4 +1,4 @@
-from django.utils.encoding import force_unicode
+# from django.utils.encoding import force_unicode
 from django.conf import settings
 from django_comments import get_model
 from django_comments.forms import CommentForm
@@ -35,7 +35,7 @@ class MpttCommentForm(CommentForm):
         
     def generate_title(self):
         if not self.parent_comment:
-            return force_unicode(self.target_object)
+            return self.target_object
         else:
             return u'%s%s' % ((self.parent_comment.title[:3] != u'Re:') and 'Re: ' or u'', self.parent_comment.title)
 
@@ -65,7 +65,7 @@ class MpttCommentForm(CommentForm):
             
         new = get_model()(
             content_type = ContentType.objects.get_for_model(self.target_object),
-            object_pk    = force_unicode(self.target_object._get_pk_val()),
+            object_pk    = self.target_object._get_pk_val(),
             user_name    = "",  # self.cleaned_data["name"],
             user_email   = "",   # self.cleaned_data["email"],
             user_url     = "",     # self.cleaned_data["url"],
