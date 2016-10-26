@@ -7,11 +7,13 @@ from django.core import urlresolvers
 from mptt.models import MPTTModel
 from mptt_comments.managers import MpttCommentManager
 
+from vote.managers import VotableManager
+
 class AbstractMpttComment(MPTTModel, Comment):
 
     title = models.CharField(max_length=255)
     parent = models.ForeignKey('self', related_name='children', blank=True, null=True)
-    
+
     def save(self, *a, **kw):
         if not self.ip_address:
             self.ip_address = '0.0.0.0'
@@ -26,5 +28,7 @@ class AbstractMpttComment(MPTTModel, Comment):
         ordering = ('tree_id', 'lft')
 
 class MpttComment(AbstractMpttComment):
+    votes = VotableManager()
+    accepted_answer = models.BooleanField(default=False)
     
     objects = MpttCommentManager()
